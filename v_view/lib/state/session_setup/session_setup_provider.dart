@@ -6,11 +6,13 @@ final _datasource = SessionInputLocalDatasource();
 
 final sessionInputProvider =
     StateNotifierProvider<SessionInputNotifier, SessionInput>((ref) {
-  return SessionInputNotifier(_datasource.load());
+  return SessionInputNotifier(_datasource.load(), _datasource);
 });
 
 class SessionInputNotifier extends StateNotifier<SessionInput> {
-  SessionInputNotifier(SessionInput? saved)
+  final SessionInputLocalDatasource? _ds;
+
+  SessionInputNotifier(SessionInput? saved, [this._ds])
       : super(saved ??
             const SessionInput(
               type: InterviewType.job,
@@ -21,7 +23,7 @@ class SessionInputNotifier extends StateNotifier<SessionInput> {
 
   void update(SessionInput input) {
     state = input;
-    _datasource.save(input);
+    _ds?.save(input);
   }
 
   void setType(InterviewType type) => update(state.copyWith(type: type));

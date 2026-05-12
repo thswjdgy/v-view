@@ -3,10 +3,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:v_view/domain/session_setup/session_input.dart';
 import 'package:v_view/state/session_setup/session_setup_provider.dart';
 
+// Hive가 초기화되지 않은 테스트 환경에서 Provider를 override해 Datasource를 우회합니다.
+ProviderContainer makeContainer() => ProviderContainer(
+      overrides: [
+        sessionInputProvider
+            .overrideWith((_) => SessionInputNotifier(null, null)),
+      ],
+    );
+
 void main() {
   group('SessionInputNotifier.isValid', () {
-    ProviderContainer makeContainer() => ProviderContainer();
-
     test('필수 입력 3개 모두 있을 때 isValid = true', () {
       final container = makeContainer();
       final notifier = container.read(sessionInputProvider.notifier);
