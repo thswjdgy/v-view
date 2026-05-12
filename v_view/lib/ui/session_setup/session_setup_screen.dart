@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../state/session_setup/session_setup_provider.dart';
-import '../interview/interview_screen.dart';
+import 'session_confirm_screen.dart';
 import 'widgets/interview_type_selector.dart';
 
 class SessionSetupScreen extends ConsumerWidget {
@@ -46,6 +46,7 @@ class SessionSetupScreen extends ConsumerWidget {
               initialValue: input.selfIntroduction,
               onChanged: notifier.setSelfIntroduction,
               maxLines: 6,
+              maxLength: 500,
             ),
             const SizedBox(height: 8),
             const Text(
@@ -60,11 +61,11 @@ class SessionSetupScreen extends ConsumerWidget {
                     ? () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const InterviewScreen(),
+                            builder: (_) => const SessionConfirmScreen(),
                           ),
                         )
                     : null,
-                child: const Text('면접 시작'),
+                child: const Text('다음'),
               ),
             ),
           ],
@@ -80,6 +81,7 @@ class _InputField extends StatelessWidget {
   final String initialValue;
   final ValueChanged<String> onChanged;
   final int maxLines;
+  final int? maxLength;
 
   const _InputField({
     required this.label,
@@ -87,6 +89,7 @@ class _InputField extends StatelessWidget {
     required this.initialValue,
     required this.onChanged,
     this.maxLines = 1,
+    this.maxLength,
   });
 
   @override
@@ -103,6 +106,7 @@ class _InputField extends StatelessWidget {
             border: const OutlineInputBorder(),
           ),
           maxLines: maxLines,
+          maxLength: maxLength,
           onChanged: onChanged,
         ),
       ],

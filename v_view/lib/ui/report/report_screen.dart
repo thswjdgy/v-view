@@ -5,7 +5,9 @@ import '../../state/interview/interview_provider.dart';
 import '../../state/gaze/gaze_provider.dart';
 import '../../state/session_setup/session_setup_provider.dart';
 import '../../domain/interview/interview_question.dart';
+import '../../state/history/history_provider.dart';
 import 'widgets/gaze_metrics_card.dart';
+import 'widgets/gaze_trend_chart.dart';
 import 'widgets/improvement_list.dart';
 import 'widgets/qa_summary_list.dart';
 
@@ -100,6 +102,10 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
               ),
             ),
           GazeMetricsCard(metrics: report.gazeMetrics),
+          const SizedBox(height: 16),
+          GazeTrendChart(
+            recentSessions: ref.read(historyProvider),
+          ),
           const SizedBox(height: 16),
           if (report.improvementPoints.isNotEmpty) ...[
             ImprovementList(points: report.improvementPoints),

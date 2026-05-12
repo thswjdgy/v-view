@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import '../../data/remote/gaze/gaze_analyzer.dart';
 import '../../domain/gaze/gaze_metrics.dart';
 
@@ -45,7 +46,7 @@ class GazeNotifier extends StateNotifier<GazeState> {
     state = state.copyWith(isRunning: false, latestMetrics: metrics);
   }
 
-  Future<void> processFrame(dynamic inputImage) async {
+  Future<void> processFrame(InputImage inputImage) async {
     if (!state.isRunning) return;
     final frame = await _analyzer.analyze(inputImage);
     state = state.copyWith(frames: [...state.frames, frame]);

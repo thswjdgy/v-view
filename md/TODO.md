@@ -91,15 +91,15 @@
 ### 기능 2 — 실시간 시선 분석 (Week 4~5)
 
 - [ ] **2.1** 카메라 권한 요청 → 승인/거부 분기 실기기 테스트
-- [ ] **2.2** `CameraController` 연결 — `InterviewScreen`에 카메라 프리뷰 추가
-- [ ] **2.3** 카메라 프레임 → `GazeAnalyzer.analyze()` 파이프라인 연결
-- [ ] **2.4** `GazeNotifier.processFrame()` 실시간 호출 (면접 중 매 프레임)
-- [ ] **2.5** 시선 분산 1초 기준 단위 테스트 작성 및 통과
+- [x] **2.2** `CameraController` 연결 — `InterviewScreen`에 카메라 프리뷰 추가
+- [x] **2.3** 카메라 프레임 → `GazeAnalyzer.analyze()` 파이프라인 연결
+- [x] **2.4** `GazeNotifier.processFrame()` 실시간 호출 (면접 중 매 프레임)
+- [x] **2.5** 시선 분산 1초 기준 단위 테스트 작성 및 통과
 
 ### 기능 3 — 피드백 리포트 (Week 5)
 
 - [ ] **3.1** `GazeMetricsCard` 파이차트 실 데이터 연결 확인
-- [ ] **3.2** 히스토리 최근 5회 추이 그래프 (`LineChart`, fl_chart)
+- [x] **3.2** 히스토리 최근 5회 추이 그래프 (`LineChart`, fl_chart)
 - [ ] **3.3** 개선 포인트 TOP3 — 근거 지표 연결 로직 검증
 - [ ] **3.4** 측정 불가/참고용 배너 표시 조건 확인
 - [ ] **3.5** AI 피드백 실패 시 fallback 리포트 표시 확인
@@ -109,13 +109,13 @@
 - [ ] **4.1** 세션 종료 후 히스토리 목록에 자동 추가 확인
 - [ ] **4.2** 히스토리 상세 → 리포트 재열람 흐름 테스트
 - [ ] **4.3** 단일 세션 삭제 — 삭제 불가 복구 안내 다이얼로그 확인
-- [ ] **4.4** 전체 삭제 기능 추가 (HistoryListScreen 상단 버튼)
+- [x] **4.4** 전체 삭제 기능 추가 (HistoryListScreen 상단 버튼)
 
 ### 기능 5 — 세션 설정 (Week 4)
 
 - [ ] **5.1** 이전 입력값 자동 불러오기 확인 (재사용)
-- [ ] **5.2** 입력값 미리보기/확인 화면 추가 (`ConfirmScreen`)
-- [ ] **5.3** 글자 수 제한 및 안내 문구 추가 (자기소개서 최대 500자 등)
+- [x] **5.2** 입력값 미리보기/확인 화면 추가 (`ConfirmScreen`)
+- [x] **5.3** 글자 수 제한 및 안내 문구 추가 (자기소개서 최대 500자 등)
 
 ### 기능 6 — 권한·오류 처리 (Week 5~6)
 
@@ -129,8 +129,8 @@
 
 ## 테스트 TODO (Week 5~6)
 
-- [ ] `gaze_analyzer_test.dart` — 시선 분산 1초 미만 카운트 안됨
-- [ ] `gaze_analyzer_test.dart` — 응시율 계산 공식 검증
+- [x] `gaze_analyzer_test.dart` — 시선 분산 1초 미만 카운트 안됨
+- [x] `gaze_analyzer_test.dart` — 응시율 계산 공식 검증
 - [ ] `session_input_notifier_test.dart` — isValid 조건 테스트
 - [ ] `report_notifier_test.dart` — AI 실패 시 fallback 리포트 생성
 - [ ] `flutter test` 전체 통과 확인

@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/remote/gaze/camera_frame_converter.dart';
 import '../../state/interview/interview_provider.dart';
 import '../../state/session_setup/session_setup_provider.dart';
 import '../../state/gaze/gaze_provider.dart';
@@ -22,17 +24,57 @@ class _InterviewScreenState extends ConsumerState<InterviewScreen>
   final _answerController = TextEditingController();
   static const _defaultTimerSeconds = 120;
 
+  CameraController? _cameraController;
+  bool _cameraReady = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _startSession());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _initCamera();
+      _startSession();
+    });
+  }
+
+  Future<void> _initCamera() async {
+    try {
+      final cameras = await availableCameras();
+      final front = cameras.firstWhere(
+        (c) => c.lensDirection == CameraLensDirection.front,
+        orElse: () => cameras.first,
+      );
+      final controller = CameraController(
+        front,
+        ResolutionPreset.low,
+        enableAudio: false,
+        imageFormatGroup: ImageFormatGroup.yuv420,
+      );
+      await controller.initialize();
+      if (!mounted) return;
+      setState(() {
+        _cameraController = controller;
+        _cameraReady = true;
+      });
+      controller.startImageStream((image) {
+        final inputImage = CameraFrameConverter.convert(
+          image: image,
+          camera: front,
+        );
+        if (inputImage != null) {
+          ref.read(gazeProvider.notifier).processFrame(inputImage);
+        }
+      });
+    } catch (_) {
+      // Camera unavailable — gaze analysis runs without frames
+    }
   }
 
   @override
   void dispose() {
     _timer?.cancel();
     _answerController.dispose();
+    _cameraController?.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -41,6 +83,17 @@ class _InterviewScreenState extends ConsumerState<InterviewScreen>
   void didChangeAppLifecycleState(AppLifecycleState lifecycle) {
     if (lifecycle == AppLifecycleState.paused) {
       _pauseSession();
+      _cameraController?.stopImageStream();
+    } else if (lifecycle == AppLifecycleState.resumed) {
+      _cameraController?.startImageStream((image) {
+        final camera = _cameraController?.description;
+        if (camera == null) return;
+        final inputImage =
+            CameraFrameConverter.convert(image: image, camera: camera);
+        if (inputImage != null) {
+          ref.read(gazeProvider.notifier).processFrame(inputImage);
+        }
+      });
     }
   }
 
@@ -82,6 +135,7 @@ class _InterviewScreenState extends ConsumerState<InterviewScreen>
 
   void _finishSession() {
     _timer?.cancel();
+    _cameraController?.stopImageStream();
     ref.read(gazeProvider.notifier).stop();
     ref.read(interviewProvider.notifier).finish();
   }
@@ -106,6 +160,11 @@ class _InterviewScreenState extends ConsumerState<InterviewScreen>
         appBar: AppBar(
           title: const Text('모의 면접'),
           actions: [
+            if (_cameraReady)
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: _CameraPreviewBadge(controller: _cameraController!),
+              ),
             if (state.phase == InterviewPhase.inProgress)
               IconButton(
                 icon: const Icon(Icons.pause),
@@ -234,6 +293,23 @@ class _InterviewScreenState extends ConsumerState<InterviewScreen>
             child: const Text('종료'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _CameraPreviewBadge extends StatelessWidget {
+  final CameraController controller;
+  const _CameraPreviewBadge({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(6),
+      child: SizedBox(
+        width: 48,
+        height: 36,
+        child: CameraPreview(controller),
       ),
     );
   }

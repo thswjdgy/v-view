@@ -14,17 +14,53 @@ class HistoryListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final items = ref.watch(historyProvider);
 
-    if (items.isEmpty) {
-      return const Center(
-        child: Text('아직 면접 기록이 없습니다.\n첫 면접을 시작해보세요!',
-            textAlign: TextAlign.center),
-      );
-    }
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('면접 기록'),
+        actions: [
+          if (items.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.delete_sweep),
+              tooltip: '전체 삭제',
+              onPressed: () => _confirmDeleteAll(context, ref),
+            ),
+        ],
+      ),
+      body: items.isEmpty
+          ? const Center(
+              child: Text(
+                '아직 면접 기록이 없습니다.\n첫 면접을 시작해보세요!',
+                textAlign: TextAlign.center,
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: items.length,
+              itemBuilder: (_, i) => _HistoryCard(item: items[i]),
+            ),
+    );
+  }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: items.length,
-      itemBuilder: (_, i) => _HistoryCard(item: items[i]),
+  void _confirmDeleteAll(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('전체 삭제'),
+        content: const Text('모든 면접 기록을 삭제합니다. 되돌릴 수 없습니다.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('취소'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ref.read(historyProvider.notifier).deleteAll();
+            },
+            child: const Text('전체 삭제'),
+          ),
+        ],
+      ),
     );
   }
 }
