@@ -76,6 +76,8 @@
 - [x] `docs/DEPLOY.md` (빌드·배포 가이드)
 - [x] `docs/TESTING.md` (테스트 전략)
 - [x] `AUTHORING.손정협.md` (AI Agent 부트스트래핑 방법론)
+- [x] `.planning/decisions/ADR-0001~0003` (발표용 ADR 3종 — 60초 말하기 포함)
+- [x] `LLM-WIKI.md` (Claude Code 바이브 코딩 암묵지 — 보너스 +1)
 
 ---
 
