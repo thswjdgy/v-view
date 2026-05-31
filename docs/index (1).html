@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>v-view 발표</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700;900&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
@@ -452,106 +451,64 @@
   #s4 {
     align-items: center;
     justify-content: center;
+    overflow-y: auto;
   }
 
-  .mermaid-wrap {
-    <div style="width:100%;max-width:860px;margin-top:12px;display:flex;flex-direction:column;gap:10px;">
-
-  <!-- Presentation -->
-  <div style="background:#1a1a2e;border:1px solid #7c6bff;border-radius:12px;padding:16px 24px;">
-    <div style="font-size:10px;letter-spacing:3px;color:#7c6bff;margin-bottom:10px;text-transform:uppercase;">Presentation Layer</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <span style="background:#0a0a0f;border:1px solid #7c6bff33;border-radius:8px;padding:6px 14px;font-size:12px;">HomeScreen</span>
-      <span style="color:#7c6bff;">→</span>
-      <span style="background:#0a0a0f;border:1px solid #7c6bff33;border-radius:8px;padding:6px 14px;font-size:12px;">SessionSetup</span>
-      <span style="color:#7c6bff;">→</span>
-      <span style="background:#0a0a0f;border:1px solid #7c6bff33;border-radius:8px;padding:6px 14px;font-size:12px;">InterviewScreen</span>
-      <span style="color:#7c6bff;">→</span>
-      <span style="background:#0a0a0f;border:1px solid #7c6bff33;border-radius:8px;padding:6px 14px;font-size:12px;">ReportScreen</span>
-    </div>
-  </div>
-
-  <!-- 화살표 -->
-  <div style="text-align:center;color:#3a3a50;font-size:18px;">↓</div>
-
-  <!-- Application -->
-  <div style="background:#1a1a2e;border:1px solid #6bffce;border-radius:12px;padding:16px 24px;">
-    <div style="font-size:10px;letter-spacing:3px;color:#6bffce;margin-bottom:10px;text-transform:uppercase;">Application Layer · Riverpod</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <span style="background:#0a0a0f;border:1px solid #6bffce33;border-radius:8px;padding:6px 14px;font-size:12px;">HistoryVM</span>
-      <span style="color:#6bffce;">→</span>
-      <span style="background:#0a0a0f;border:1px solid #6bffce33;border-radius:8px;padding:6px 14px;font-size:12px;">SessionVM</span>
-      <span style="color:#6bffce;">→</span>
-      <span style="background:#0a0a0f;border:1px solid #6bffce33;border-radius:8px;padding:6px 14px;font-size:12px;">GazeAnalysisVM</span>
-      <span style="color:#6bffce;">→</span>
-      <span style="background:#0a0a0f;border:1px solid #6bffce33;border-radius:8px;padding:6px 14px;font-size:12px;">ReportVM</span>
-    </div>
-  </div>
-
-  <!-- 화살표 -->
-  <div style="text-align:center;color:#3a3a50;font-size:18px;">↓</div>
-
-  <!-- Domain -->
-  <div style="background:#1a1a2e;border:1px solid #ff6b9d;border-radius:12px;padding:16px 24px;">
-    <div style="font-size:10px;letter-spacing:3px;color:#ff6b9d;margin-bottom:10px;text-transform:uppercase;">Domain Layer</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <span style="background:#0a0a0f;border:1px solid #ff6b9d33;border-radius:8px;padding:6px 14px;font-size:12px;">QuestionService</span>
-      <span style="color:#ff6b9d;">→</span>
-      <span style="background:#0a0a0f;border:1px solid #ff6b9d33;border-radius:8px;padding:6px 14px;font-size:12px;">GazeService</span>
-      <span style="color:#ff6b9d;">→</span>
-      <span style="background:#0a0a0f;border:1px solid #ff6b9d33;border-radius:8px;padding:6px 14px;font-size:12px;">ReportService</span>
-    </div>
-  </div>
-
-  <!-- 화살표 -->
-  <div style="text-align:center;color:#3a3a50;font-size:18px;">↓</div>
-
-  <!-- Data -->
-  <div style="background:#1a1a2e;border:1px solid #ffb86b;border-radius:12px;padding:16px 24px;">
-    <div style="font-size:10px;letter-spacing:3px;color:#ffb86b;margin-bottom:10px;text-transform:uppercase;">Data Layer</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <span style="background:#0a0a0f;border:1px solid #ffb86b33;border-radius:8px;padding:6px 14px;font-size:12px;">ClaudeApi</span>
-      <span style="color:#ffb86b;">→</span>
-      <span style="background:#0a0a0f;border:1px solid #ffb86b33;border-radius:8px;padding:6px 14px;font-size:12px;">GazeRepo (ML Kit)</span>
-      <span style="color:#ffb86b;">→</span>
-      <span style="background:#0a0a0f;border:1px solid #ffb86b33;border-radius:8px;padding:6px 14px;font-size:12px;">SessionRepo (Hive)</span>
-    </div>
-  </div>
-
-</div>
+  .arch-wrap {
+    width: 100%;
+    max-width: 980px;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
-  .mermaid {
-    flowchart TB
-  subgraph P["🖥 Presentation Layer"]
-    H[HomeScreen] --> S[SessionSetup] --> I[InterviewScreen] --> R[ReportScreen]
-  end
-
-  subgraph A["⚡ Application Layer (Riverpod)"]
-    HV[HistoryVM] --> SV[SessionVM] --> GV[GazeVM] --> RV[ReportVM]
-  end
-
-  subgraph D["💎 Domain Layer"]
-    QS[QuestionService] --> GS[GazeService] --> RS[ReportService]
-  end
-
-  subgraph DA["🗄 Data Layer"]
-    CA[ClaudeApi] --> GR[GazeRepo] --> SR[SessionRepo]
-  end
-
-  P --> A --> D --> DA
-
-  style P  fill:#1a1a2e,stroke:#7c6bff,color:#e8e8f0
-  style A  fill:#1a1a2e,stroke:#6bffce,color:#e8e8f0
-  style D  fill:#1a1a2e,stroke:#ff6b9d,color:#e8e8f0
-  style DA fill:#1a1a2e,stroke:#ffb86b,color:#e8e8f0
+  .arch-layer {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius: 16px;
+    padding: 18px 22px;
   }
 
-.mermaid svg {
-  width: 100% !important;
-  height: auto !important;
-  max-height: 500px;  /* 기존 360px → 500px */
-}
+  .arch-layer.presentation { border: 1px solid #7c6bff; }
+  .arch-layer.application { border: 1px solid #6bffce; }
+  .arch-layer.domain { border: 1px solid #ff6b9d; }
+  .arch-layer.data { border: 1px solid #ffb86b; }
+
+  .arch-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .arch-layer.presentation .arch-label { color: #7c6bff; }
+  .arch-layer.application .arch-label { color: #6bffce; }
+  .arch-layer.domain .arch-label { color: #ff6b9d; }
+  .arch-layer.data .arch-label { color: #ffb86b; }
+
+  .arch-flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arch-node {
+    background: #0a0a0f;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .arch-arrow {
+    font-size: 18px;
+    color: #3a3a50;
+    text-align: center;
+    line-height: 1;
+  }
 
   .arch-legend {
     display: flex;
@@ -693,12 +650,17 @@
       align-items: flex-start;
     }
 
-    .mermaid-wrap {
-      padding: 18px;
+    .arch-wrap {
+      max-width: 100%;
     }
 
-    .mermaid svg {
-      max-height: none;
+    .arch-node {
+      width: 100%;
+    }
+
+    .arch-flow {
+      flex-direction: column;
+      align-items: stretch;
     }
   }
 </style>
@@ -878,21 +840,62 @@
       <div class="section-label">03 — 설계 / 아키텍처</div>
       <div class="slide-title" style="margin-bottom:18px">레이어드 아키텍처</div>
 
-      <div class="mermaid-wrap">
-        <div class="mermaid">
-flowchart TB
-    P["🖥️ Presentation — 화면 / 위젯"]
-    A["⚙️ Application — Riverpod 상태관리"]
-    D["🧠 Domain — 비즈니스 규칙"]
-    DA["💾 Data — Claude API · ML Kit · Hive"]
+      <div class="arch-wrap">
 
-    P --> A --> D --> DA
-
-    style P fill:#1a1a2e,stroke:#7c6bff,color:#e8e8f0,stroke-width:2px
-    style A fill:#1a1a2e,stroke:#6bffce,color:#e8e8f0,stroke-width:2px
-    style D fill:#1a1a2e,stroke:#ff6b9d,color:#e8e8f0,stroke-width:2px
-    style DA fill:#1a1a2e,stroke:#ffb86b,color:#e8e8f0,stroke-width:2px
+        <div class="arch-layer presentation">
+          <div class="arch-label">Presentation Layer</div>
+          <div class="arch-flow">
+            <div class="arch-node">HomeScreen</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node">SessionSetup</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node">InterviewScreen</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node">ReportScreen</div>
+          </div>
         </div>
+
+        <div class="arch-arrow">↓</div>
+
+        <div class="arch-layer application">
+          <div class="arch-label">Application Layer · Riverpod</div>
+          <div class="arch-flow">
+            <div class="arch-node">HistoryVM</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node">SessionVM</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node">GazeAnalysisVM</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node">ReportVM</div>
+          </div>
+        </div>
+
+        <div class="arch-arrow">↓</div>
+
+        <div class="arch-layer domain">
+          <div class="arch-label">Domain Layer</div>
+          <div class="arch-flow">
+            <div class="arch-node">QuestionService</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node">GazeService</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node">ReportService</div>
+          </div>
+        </div>
+
+        <div class="arch-arrow">↓</div>
+
+        <div class="arch-layer data">
+          <div class="arch-label">Data Layer</div>
+          <div class="arch-flow">
+            <div class="arch-node">ClaudeApi</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node">GazeRepo (ML Kit)</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node">SessionRepo (Hive)</div>
+          </div>
+        </div>
+
       </div>
 
       <div class="arch-legend">
@@ -1044,26 +1047,6 @@ flowchart TB
       }, 1000);
     }
   }
-
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'dark',
-    themeVariables: {
-      darkMode: true,
-      background: '#13131a',
-      mainBkg: '#1a1a2e',
-      nodeBorder: '#7c6bff',
-      clusterBkg: '#13131a',
-      titleColor: '#e8e8f0',
-      edgeLabelBackground: '#13131a',
-      lineColor: '#3a3a50',
-      fontSize: '15px'
-    },
-    flowchart: {
-      curve: 'basis',
-      padding: 24
-    }
-  });
 </script>
 </body>
 </html>
