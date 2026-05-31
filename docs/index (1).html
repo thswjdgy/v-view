@@ -455,12 +455,70 @@
   }
 
   .mermaid-wrap {
-    width: 100%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 30px;
-    margin-top: 8px;
+    <div style="width:100%;max-width:860px;margin-top:12px;display:flex;flex-direction:column;gap:10px;">
+
+  <!-- Presentation -->
+  <div style="background:#1a1a2e;border:1px solid #7c6bff;border-radius:12px;padding:16px 24px;">
+    <div style="font-size:10px;letter-spacing:3px;color:#7c6bff;margin-bottom:10px;text-transform:uppercase;">Presentation Layer</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <span style="background:#0a0a0f;border:1px solid #7c6bff33;border-radius:8px;padding:6px 14px;font-size:12px;">HomeScreen</span>
+      <span style="color:#7c6bff;">→</span>
+      <span style="background:#0a0a0f;border:1px solid #7c6bff33;border-radius:8px;padding:6px 14px;font-size:12px;">SessionSetup</span>
+      <span style="color:#7c6bff;">→</span>
+      <span style="background:#0a0a0f;border:1px solid #7c6bff33;border-radius:8px;padding:6px 14px;font-size:12px;">InterviewScreen</span>
+      <span style="color:#7c6bff;">→</span>
+      <span style="background:#0a0a0f;border:1px solid #7c6bff33;border-radius:8px;padding:6px 14px;font-size:12px;">ReportScreen</span>
+    </div>
+  </div>
+
+  <!-- 화살표 -->
+  <div style="text-align:center;color:#3a3a50;font-size:18px;">↓</div>
+
+  <!-- Application -->
+  <div style="background:#1a1a2e;border:1px solid #6bffce;border-radius:12px;padding:16px 24px;">
+    <div style="font-size:10px;letter-spacing:3px;color:#6bffce;margin-bottom:10px;text-transform:uppercase;">Application Layer · Riverpod</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <span style="background:#0a0a0f;border:1px solid #6bffce33;border-radius:8px;padding:6px 14px;font-size:12px;">HistoryVM</span>
+      <span style="color:#6bffce;">→</span>
+      <span style="background:#0a0a0f;border:1px solid #6bffce33;border-radius:8px;padding:6px 14px;font-size:12px;">SessionVM</span>
+      <span style="color:#6bffce;">→</span>
+      <span style="background:#0a0a0f;border:1px solid #6bffce33;border-radius:8px;padding:6px 14px;font-size:12px;">GazeAnalysisVM</span>
+      <span style="color:#6bffce;">→</span>
+      <span style="background:#0a0a0f;border:1px solid #6bffce33;border-radius:8px;padding:6px 14px;font-size:12px;">ReportVM</span>
+    </div>
+  </div>
+
+  <!-- 화살표 -->
+  <div style="text-align:center;color:#3a3a50;font-size:18px;">↓</div>
+
+  <!-- Domain -->
+  <div style="background:#1a1a2e;border:1px solid #ff6b9d;border-radius:12px;padding:16px 24px;">
+    <div style="font-size:10px;letter-spacing:3px;color:#ff6b9d;margin-bottom:10px;text-transform:uppercase;">Domain Layer</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <span style="background:#0a0a0f;border:1px solid #ff6b9d33;border-radius:8px;padding:6px 14px;font-size:12px;">QuestionService</span>
+      <span style="color:#ff6b9d;">→</span>
+      <span style="background:#0a0a0f;border:1px solid #ff6b9d33;border-radius:8px;padding:6px 14px;font-size:12px;">GazeService</span>
+      <span style="color:#ff6b9d;">→</span>
+      <span style="background:#0a0a0f;border:1px solid #ff6b9d33;border-radius:8px;padding:6px 14px;font-size:12px;">ReportService</span>
+    </div>
+  </div>
+
+  <!-- 화살표 -->
+  <div style="text-align:center;color:#3a3a50;font-size:18px;">↓</div>
+
+  <!-- Data -->
+  <div style="background:#1a1a2e;border:1px solid #ffb86b;border-radius:12px;padding:16px 24px;">
+    <div style="font-size:10px;letter-spacing:3px;color:#ffb86b;margin-bottom:10px;text-transform:uppercase;">Data Layer</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <span style="background:#0a0a0f;border:1px solid #ffb86b33;border-radius:8px;padding:6px 14px;font-size:12px;">ClaudeApi</span>
+      <span style="color:#ffb86b;">→</span>
+      <span style="background:#0a0a0f;border:1px solid #ffb86b33;border-radius:8px;padding:6px 14px;font-size:12px;">GazeRepo (ML Kit)</span>
+      <span style="color:#ffb86b;">→</span>
+      <span style="background:#0a0a0f;border:1px solid #ffb86b33;border-radius:8px;padding:6px 14px;font-size:12px;">SessionRepo (Hive)</span>
+    </div>
+  </div>
+
+</div>
   }
 
   .mermaid {
