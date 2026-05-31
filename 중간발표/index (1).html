@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v-view 발표</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --border: #1e1e2e;
+    --accent: #7c6bff;
+    --accent2: #ff6b9d;
+    --accent3: #6bffce;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Pretendard', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    cursor: none;
+  }
+
+  /* 커스텀 커서 */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s;
+  }
+
+  /* 슬라이드 컨테이너 */
+  .slides { width: 100vw; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  /* 네비게이션 */
+  .nav {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+  }
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .dot.active { background: var(--accent); width: 20px; border-radius: 3px; }
+
+  /* 타이머 */
+  .timer {
+    position: fixed;
+    top: 24px;
+    right: 32px;
+    font-family: 'Space Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent3);
+    z-index: 100;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  .timer.warning { color: var(--accent2); animation: pulse 0.5s infinite; }
+  .timer.stopped { color: var(--muted); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+  .timer-label {
+    position: fixed;
+    top: 58px;
+    right: 32px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 100;
+  }
+
+  /* 슬라이드 번호 */
+  .slide-num {
+    position: fixed;
+    top: 24px;
+    left: 32px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    z-index: 100;
+  }
+
+  /* ---- SLIDE 1: TITLE ---- */
+  #s1 { background: var(--bg); }
+  #s1::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(124,107,255,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .title-tag {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+  .title-main {
+    font-size: clamp(64px, 8vw, 96px);
+    font-weight: 900;
+    letter-spacing: -3px;
+    line-height: 1;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.4s forwards;
+  }
+  .title-main span { color: var(--accent); }
+  .title-sub {
+    font-size: 18px;
+    color: var(--muted);
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.6s forwards;
+    text-align: center;
+    line-height: 1.6;
+  }
+  .title-badge {
+    margin-top: 48px;
+    display: flex;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.8s forwards;
+  }
+  .badge {
+    padding: 6px 16px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .badge.hi { border-color: var(--accent); color: var(--accent); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---- SLIDE 2: PROBLEM ---- */
+  #s2 { background: var(--bg); align-items: flex-start; justify-content: center; }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .slide-title {
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 48px;
+    line-height: 1.1;
+  }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+  }
+  .problem-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .problem-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .problem-card:nth-child(1)::before { background: var(--accent); }
+  .problem-card:nth-child(2)::before { background: var(--accent2); }
+  .problem-card:nth-child(3)::before { background: var(--accent3); }
+  .problem-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    opacity: 0.15;
+  }
+  .problem-card:nth-child(1) .problem-num { color: var(--accent); opacity: 1; }
+  .problem-card:nth-child(2) .problem-num { color: var(--accent2); opacity: 1; }
+  .problem-card:nth-child(3) .problem-num { color: var(--accent3); opacity: 1; }
+  .problem-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .problem-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .vision-box {
+    margin-top: 28px;
+    width: 100%;
+    max-width: 900px;
+    background: linear-gradient(135deg, rgba(124,107,255,0.1), rgba(255,107,157,0.05));
+    border: 1px solid rgba(124,107,255,0.3);
+    border-radius: 16px;
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .vision-arrow {
+    font-size: 28px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .vision-text {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .vision-text span { color: var(--accent); }
+
+  /* ---- SLIDE 3: WBS ---- */
+  #s3 { background: var(--bg); align-items: flex-start; justify-content: center; overflow-y: auto; }
+
+  .wbs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    width: 100%;
+    max-width: 960px;
+    margin-top: 8px;
+  }
+  .wbs-col { display: flex; flex-direction: column; gap: 8px; }
+  .wbs-week {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    transition: border-color 0.3s;
+  }
+  .wbs-week:hover { border-color: var(--accent); }
+  .wbs-week-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .wbs-week-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .wbs-item {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.4;
+  }
+  .wbs-item:last-child { border-bottom: none; }
+  .wbs-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+  .wbs-dot.done { background: var(--accent3); }
+  .wbs-dot.ing { background: var(--accent); }
+  .wbs-dot.todo { background: var(--border); }
+
+  .wbs-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 16px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+
+  /* ---- SLIDE 4: ARCHITECTURE ---- */
+  #s4 { background: var(--bg); align-items: flex-start; }
+
+  .mermaid-wrap {
+    width: 100%;
+    max-width: 900px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-top: 8px;
+  }
+  .mermaid { width: 100%; }
+  .mermaid svg { width: 100% !important; height: auto !important; max-height: 360px; }
+
+  /* ---- SLIDE 5: STACK ---- */
+  #s5 { background: var(--bg); }
+
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    width: 100%;
+    max-width: 840px;
+    margin-top: 8px;
+  }
+  .stack-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .stack-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+  .stack-icon { font-size: 28px; margin-bottom: 10px; }
+  .stack-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .stack-reason { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  /* 키보드 힌트 */
+  .key-hint {
+    position: fixed;
+    bottom: 60px;
+    right: 32px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .key { padding: 2px 8px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Space Mono', monospace; }
+
+  /* 스크롤바 */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- 타이머 -->
+<div class="timer" id="timer" onclick="toggleTimer()">2:00</div>
+<div class="timer-label">탭하여 시작</div>
+
+<!-- 슬라이드 번호 -->
+<div class="slide-num" id="slideNum">01 / 05</div>
+
+<!-- 슬라이드 -->
+<div class="slides">
+
+  <!-- SLIDE 1: TITLE -->
+  <div class="slide active" id="s1">
+    <div class="title-tag">Vibe Coding Project — 중간 발표</div>
+    <div class="title-main"><span>v</span>-view</div>
+    <div class="title-sub">
+      AI가 면접 질문을 만들고<br>
+      카메라로 내 시선을 분석해 약점을 알려주는<br>
+      모바일 면접 코칭 앱
+    </div>
+    <div class="title-badge">
+      <span class="badge hi">Flutter</span>
+      <span class="badge">ML Kit</span>
+      <span class="badge">Claude API</span>
+      <span class="badge">Riverpod</span>
+      <span class="badge">Hive</span>
+    </div>
+    <div style="margin-top:28px;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);opacity:0;animation:fadeUp 0.6s 1s forwards">
+      github.com/thswjdguq/v-view · 세션 4 중간발표
+    </div>
+  </div>
+
+  <!-- SLIDE 2: PROBLEM + VISION -->
+  <div class="slide" id="s2">
+    <div style="width:100%;max-width:900px">
+      <div class="section-label">01 — 기획 / 비전</div>
+      <div class="slide-title">혼자 하는 면접 준비는<br><span style="color:var(--accent)">실전감</span>과 <span style="color:var(--accent2)">객관성</span>이 부족하다</div>
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div class="problem-num" style="font-size:22px;line-height:1.3">실전 환경<br>재현 불가</div>
+          <div class="problem-title" style="margin-top:14px">긴장감의 부재</div>
+          <div class="problem-desc">실제 면접의 압박감을 혼자서는 만들 수 없다</div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-num" style="font-size:22px;line-height:1.3">객관적<br>피드백 부재</div>
+          <div class="problem-title" style="margin-top:14px">자기 인식의 한계</div>
+          <div class="problem-desc">내 시선·긴장 상태를 스스로 인식하지 못한다</div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-num" style="font-size:22px;line-height:1.3">일방향<br>학습의 한계</div>
+          <div class="problem-title" style="margin-top:14px">영상 시청의 벽</div>
+          <div class="problem-desc">보기만 할 뿐, 내 습관은 교정되지 않는다</div>
+        </div>
+      </div>
+      <div class="vision-box">
+        <div class="vision-arrow">→</div>
+        <div class="vision-text">
+          v-view는 <span>카메라 + AI</span>로 실전 환경을 시뮬레이션하고<br>
+          내 시선·답변을 객관적으로 분석해 <span>약점을 직접 보여줍니다</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: WBS -->
+  <div class="slide" id="s3">
+    <div style="width:100%;max-width:960px">
+      <div class="section-label">02 — WBS / 진행 현황</div>
+      <div class="slide-title" style="margin-bottom:16px">7주 개발 로드맵</div>
+      <div class="wbs-grid">
+        <div class="wbs-col">
+          <div class="wbs-week" style="border-color:rgba(107,255,206,0.4)">
+            <div class="wbs-week-label">세션 1 · 10주차</div>
+            <div class="wbs-week-title">오리엔테이션</div>
+            <div class="wbs-item"><div class="wbs-dot done"></div>기획서 작성</div>
+            <div class="wbs-item"><div class="wbs-dot done"></div>기능명세서</div>
+            <div class="wbs-item"><div class="wbs-dot done"></div>MVP 범위 확정</div>
+            <div class="wbs-item"><div class="wbs-dot done"></div>GitHub repo 생성</div>
+          </div>
+          <div class="wbs-week" style="border-color:rgba(107,255,206,0.4)">
+            <div class="wbs-week-label">세션 2 · 10주차</div>
+            <div class="wbs-week-title">기획 & 일정</div>
+            <div class="wbs-item"><div class="wbs-dot done"></div>WBS 작성</div>
+            <div class="wbs-item"><div class="wbs-dot done"></div>ADR 3개</div>
+            <div class="wbs-item"><div class="wbs-dot done"></div>CLAUDE.md / AGENTS.md</div>
+          </div>
+        </div>
+        <div class="wbs-col">
+          <div class="wbs-week" style="border-color:rgba(107,255,206,0.4)">
+            <div class="wbs-week-label">세션 3 · 11주차</div>
+            <div class="wbs-week-title">설계 & 환경</div>
+            <div class="wbs-item"><div class="wbs-dot done"></div>ARCHITECTURE.md</div>
+            <div class="wbs-item"><div class="wbs-dot done"></div>SETUP.md</div>
+            <div class="wbs-item"><div class="wbs-dot done"></div>레이어 구조 생성</div>
+            <div class="wbs-item"><div class="wbs-dot done"></div>빌드 가능 상태</div>
+          </div>
+          <div class="wbs-week" style="border-color:rgba(124,107,255,0.4)">
+            <div class="wbs-week-label">세션 4 · 12주차 (현재)</div>
+            <div class="wbs-week-title">구현 1 + 중간발표</div>
+            <div class="wbs-item"><div class="wbs-dot done"></div>세션 설정 화면</div>
+            <div class="wbs-item"><div class="wbs-dot ing"></div>AI 질문 생성</div>
+            <div class="wbs-item"><div class="wbs-dot ing"></div>ML Kit 시선 분석</div>
+            <div class="wbs-item"><div class="wbs-dot ing"></div>중간 발표</div>
+          </div>
+        </div>
+        <div class="wbs-col">
+          <div class="wbs-week">
+            <div class="wbs-week-label">세션 5 · 13주차</div>
+            <div class="wbs-week-title">구현 2 + 테스트</div>
+            <div class="wbs-item"><div class="wbs-dot todo"></div>피드백 리포트</div>
+            <div class="wbs-item"><div class="wbs-dot todo"></div>히스토리 저장</div>
+            <div class="wbs-item"><div class="wbs-dot todo"></div>오류 처리</div>
+            <div class="wbs-item"><div class="wbs-dot todo"></div>테스트 작성</div>
+          </div>
+          <div class="wbs-week">
+            <div class="wbs-week-label">세션 6 · 14주차</div>
+            <div class="wbs-week-title">마감 & 배포</div>
+            <div class="wbs-item"><div class="wbs-dot todo"></div>Firebase 배포</div>
+            <div class="wbs-item"><div class="wbs-dot todo"></div>README 완성</div>
+            <div class="wbs-item"><div class="wbs-dot todo"></div>AGENTS.md</div>
+            <div class="wbs-item"><div class="wbs-dot todo"></div>deploy.md</div>
+          </div>
+        </div>
+        <div class="wbs-col">
+          <div class="wbs-week">
+            <div class="wbs-week-label">세션 7 · 15주차</div>
+            <div class="wbs-week-title">최종 발표</div>
+            <div class="wbs-item"><div class="wbs-dot todo"></div>발표 자료</div>
+            <div class="wbs-item"><div class="wbs-dot todo"></div>시연 시나리오</div>
+            <div class="wbs-item"><div class="wbs-dot todo"></div>Q&A 준비</div>
+          </div>
+          <div class="wbs-week" style="background:rgba(124,107,255,0.06);border-color:rgba(124,107,255,0.2)">
+            <div class="wbs-week-label">현재 진행도</div>
+            <div class="wbs-week-title" style="color:var(--accent)">세션 4 · 구현 단계</div>
+            <div style="margin-top:12px;font-size:11px;color:var(--muted)">문서 달성도</div>
+            <div style="margin-top:8px;background:var(--border);border-radius:4px;height:6px;overflow:hidden">
+              <div style="width:100%;height:100%;background:var(--accent3);border-radius:4px"></div>
+            </div>
+            <div style="margin-top:6px;font-size:11px;color:var(--accent3)">+5점 / 5점 ✓</div>
+            <div style="margin-top:10px;font-size:11px;color:var(--muted)">25 commits · Dart 98%</div>
+          </div>
+        </div>
+      </div>
+      <div class="wbs-legend">
+        <div class="legend-item"><div class="wbs-dot done"></div>완료</div>
+        <div class="legend-item"><div class="wbs-dot ing"></div>진행중</div>
+        <div class="legend-item"><div class="wbs-dot todo"></div>예정</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: ARCHITECTURE -->
+  <div class="slide" id="s4">
+    <div style="width:100%;max-width:900px">
+      <div class="section-label">03 — 설계 / 아키텍처</div>
+      <div class="slide-title" style="margin-bottom:16px">레이어드 아키텍처</div>
+      <div class="mermaid-wrap">
+        <div class="mermaid">
+flowchart TB
+    P["🖥️ Presentation — 화면 / 위젯"]
+    A["⚙️ Application — Riverpod 상태관리"]
+    D["🧠 Domain — 비즈니스 규칙"]
+    DA["💾 Data — Claude API · ML Kit · Hive"]
+
+    P --> A --> D --> DA
+
+    style P fill:#1a1a2e,stroke:#7c6bff,color:#e8e8f0,stroke-width:2px
+    style A fill:#1a1a2e,stroke:#6bffce,color:#e8e8f0,stroke-width:2px
+    style D fill:#1a1a2e,stroke:#ff6b9d,color:#e8e8f0,stroke-width:2px
+    style DA fill:#1a1a2e,stroke:#ffb86b,color:#e8e8f0,stroke-width:2px
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:16px;font-size:12px">
+        <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;background:#7c6bff;border-radius:2px"></div>화면/UI</div>
+        <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;background:#6bffce;border-radius:2px"></div>상태관리 (Riverpod)</div>
+        <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;background:#ff6b9d;border-radius:2px"></div>비즈니스 규칙</div>
+        <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;background:#ffb86b;border-radius:2px"></div>외부 데이터</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: TECH STACK -->
+  <div class="slide" id="s5">
+    <div style="width:100%;max-width:840px;text-align:center">
+      <div class="section-label" style="text-align:center">04 — 기술 스택 선택 근거</div>
+      <div class="slide-title" style="text-align:center;margin-bottom:24px">ADR 기반 의사결정</div>
+      <div class="stack-grid">
+        <div class="stack-card">
+          <div class="stack-icon">📱</div>
+          <div class="stack-name">Flutter</div>
+          <div class="stack-reason">7주 안에 Android/iOS 동시 지원.<br>단일 코드베이스 필수</div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-icon">🔄</div>
+          <div class="stack-name">Riverpod</div>
+          <div class="stack-reason">ML Kit 실시간 데이터를<br>StreamProvider로 즉시 반영</div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-icon">👁️</div>
+          <div class="stack-name">ML Kit</div>
+          <div class="stack-reason">온디바이스 처리.<br>원본 영상 서버 전송 없음</div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-icon">🤖</div>
+          <div class="stack-name">Claude API</div>
+          <div class="stack-reason">한국어 면접 질문 생성.<br>별도 서버 없이 REST 호출</div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-icon">💾</div>
+          <div class="stack-name">Hive</div>
+          <div class="stack-reason">Flutter 전용 경량 로컬 DB.<br>원본 영상 저장 안 함</div>
+        </div>
+        <div class="stack-card" style="background:linear-gradient(135deg,rgba(124,107,255,0.1),rgba(255,107,157,0.05));border-color:rgba(124,107,255,0.3)">
+          <div class="stack-icon">📋</div>
+          <div class="stack-name">ADR 문서화</div>
+          <div class="stack-reason">모든 기술 선택 이유를<br>.planning/decisions/ 에 기록</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 네비게이션 -->
+<div class="nav" id="nav"></div>
+
+<!-- 키보드 힌트 -->
+<div class="key-hint">
+  <span class="key">←</span>
+  <span class="key">→</span>
+  <span style="margin-left:4px">or 클릭</span>
+</div>
+
+<script>
+  // 커서
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX - 4 + 'px';
+    cursor.style.top = e.clientY - 4 + 'px';
+  });
+
+  // 슬라이드
+  const slides = document.querySelectorAll('.slide');
+  const nav = document.getElementById('nav');
+  const slideNum = document.getElementById('slideNum');
+  let current = 0;
+
+  // 네비게이션 점 생성
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goTo(i);
+    nav.appendChild(dot);
+  });
+
+  function goTo(idx) {
+    slides[current].classList.remove('active');
+    nav.querySelectorAll('.dot')[current].classList.remove('active');
+    current = Math.max(0, Math.min(idx, slides.length - 1));
+    slides[current].classList.add('active');
+    nav.querySelectorAll('.dot')[current].classList.add('active');
+    slideNum.textContent = String(current + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.nav') && !e.target.closest('.timer')) goTo(current + 1);
+  });
+
+  // 타이머
+  const timerEl = document.getElementById('timer');
+  let totalSec = 120;
+  let remaining = totalSec;
+  let interval = null;
+  let running = false;
+
+  function formatTime(s) {
+    return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  }
+
+  function toggleTimer() {
+    if (remaining === 0) {
+      remaining = totalSec;
+      timerEl.textContent = formatTime(remaining);
+      timerEl.className = 'timer';
+      document.querySelector('.timer-label').textContent = '탭하여 시작';
+      running = false;
+      clearInterval(interval);
+      return;
+    }
+    if (running) {
+      clearInterval(interval);
+      running = false;
+      document.querySelector('.timer-label').textContent = '일시정지';
+    } else {
+      document.querySelector('.timer-label').textContent = '진행중';
+      running = true;
+      interval = setInterval(() => {
+        remaining--;
+        timerEl.textContent = formatTime(remaining);
+        if (remaining <= 20) timerEl.className = 'timer warning';
+        if (remaining === 0) {
+          clearInterval(interval);
+          running = false;
+          timerEl.textContent = '종료!';
+          timerEl.className = 'timer warning';
+          document.querySelector('.timer-label').textContent = '탭하여 초기화';
+        }
+      }, 1000);
+    }
+  }
+
+  // Mermaid
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      darkMode: true,
+      background: '#13131a',
+      mainBkg: '#1a1a2e',
+      nodeBorder: '#7c6bff',
+      clusterBkg: '#13131a',
+      titleColor: '#e8e8f0',
+      edgeLabelBackground: '#13131a',
+      lineColor: '#3a3a50',
+      fontSize: '13px'
+    },
+    flowchart: { curve: 'basis', padding: 20 }
+  });
+</script>
+</body>
+</html>

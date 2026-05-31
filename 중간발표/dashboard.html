@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v-view · 프로젝트 대시보드</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1a1a26;
+    --border: #1e1e2e;
+    --accent: #7c6bff;
+    --accent2: #ff6b9d;
+    --accent3: #6bffce;
+    --accent4: #ffb86b;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Pretendard', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    background-image: radial-gradient(circle at 20% 10%, rgba(124,107,255,0.08), transparent 40%),
+                      radial-gradient(circle at 80% 90%, rgba(255,107,157,0.05), transparent 40%);
+  }
+  .container { max-width: 1000px; margin: 0 auto; padding: 60px 32px 80px; }
+
+  /* HERO */
+  .hero { margin-bottom: 56px; }
+  .hero-tag {
+    font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  .hero-title {
+    font-size: clamp(48px, 7vw, 80px); font-weight: 900;
+    letter-spacing: -3px; line-height: 1; margin-bottom: 16px;
+  }
+  .hero-title span { color: var(--accent); }
+  .hero-desc {
+    font-size: 18px; color: var(--muted); font-weight: 300;
+    max-width: 600px; margin-bottom: 28px;
+  }
+  .hero-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    padding: 6px 16px; border: 1px solid var(--border);
+    border-radius: 100px; font-size: 12px; color: var(--muted); letter-spacing: 1px;
+  }
+  .badge.hi { border-color: var(--accent); color: var(--accent); }
+
+  /* SECTION */
+  .section { margin-bottom: 56px; }
+  .section-head {
+    display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px;
+  }
+  .section-num {
+    font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent);
+  }
+  .section-title { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 7px; top: 8px; bottom: 8px;
+    width: 2px; background: var(--border);
+  }
+  .tl-item { position: relative; margin-bottom: 16px; }
+  .tl-item::before {
+    content: ''; position: absolute; left: -28px; top: 6px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--border);
+  }
+  .tl-item.done::before { border-color: var(--accent3); background: var(--accent3); }
+  .tl-item.ing::before { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 0 4px rgba(124,107,255,0.2); }
+  .tl-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px;
+    transition: border-color 0.2s;
+  }
+  .tl-item.ing .tl-card { border-color: rgba(124,107,255,0.4); }
+  .tl-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .tl-week {
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    letter-spacing: 1px; color: var(--muted);
+  }
+  .tl-status {
+    font-size: 10px; padding: 2px 10px; border-radius: 100px; letter-spacing: 1px;
+  }
+  .tl-status.done { background: rgba(107,255,206,0.15); color: var(--accent3); }
+  .tl-status.ing { background: rgba(124,107,255,0.15); color: var(--accent); }
+  .tl-status.todo { background: var(--surface2); color: var(--muted); }
+  .tl-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .tl-items { font-size: 12px; color: var(--muted); }
+
+  /* PROGRESS */
+  .progress-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px 20px; text-align: center;
+  }
+  .stat-num {
+    font-family: 'Space Mono', monospace; font-size: 36px; font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .stat-card:nth-child(1) .stat-num { color: var(--accent3); }
+  .stat-card:nth-child(2) .stat-num { color: var(--accent); }
+  .stat-card:nth-child(3) .stat-num { color: var(--accent2); }
+  .stat-card:nth-child(4) .stat-num { color: var(--accent4); }
+  .stat-label { font-size: 12px; color: var(--muted); }
+
+  /* LINKS */
+  .link-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .link-card {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px 20px;
+    text-decoration: none; color: var(--text);
+    transition: all 0.2s;
+  }
+  .link-card:hover { border-color: var(--accent); transform: translateX(4px); }
+  .link-icon { font-size: 24px; }
+  .link-text { flex: 1; }
+  .link-title { font-size: 14px; font-weight: 700; }
+  .link-sub { font-size: 12px; color: var(--muted); }
+  .link-arrow { color: var(--muted); font-size: 18px; }
+
+  .cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--accent); color: #fff;
+    padding: 16px 32px; border-radius: 100px;
+    font-size: 15px; font-weight: 700; text-decoration: none;
+    margin-top: 8px; transition: transform 0.2s;
+  }
+  .cta:hover { transform: scale(1.03); }
+
+  .footer {
+    margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted); text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    .progress-grid { grid-template-columns: repeat(2, 1fr); }
+    .link-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Vibe Coding Project · 진행중</div>
+    <div class="hero-title"><span>v</span>-view</div>
+    <div class="hero-desc">
+      AI가 면접 질문을 생성하고, 카메라 기반 시선 분석으로
+      사용자의 면접 습관을 피드백하는 모바일 면접 코칭 앱
+    </div>
+    <div class="hero-badges">
+      <span class="badge hi">Flutter</span>
+      <span class="badge">Riverpod</span>
+      <span class="badge">ML Kit</span>
+      <span class="badge">Claude API</span>
+      <span class="badge">Hive</span>
+    </div>
+  </div>
+
+  <!-- WBS TIMELINE -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <span class="section-title">7주 개발 로드맵 · WBS</span>
+    </div>
+    <div class="timeline">
+      <div class="tl-item done">
+        <div class="tl-card">
+          <div class="tl-head">
+            <span class="tl-week">세션 1 · 10주차</span>
+            <span class="tl-status done">완료</span>
+          </div>
+          <div class="tl-title">오리엔테이션 · 기획</div>
+          <div class="tl-items">기획서 · 기능명세서 · MVP 범위 확정 · GitHub repo</div>
+        </div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-card">
+          <div class="tl-head">
+            <span class="tl-week">세션 2 · 10주차</span>
+            <span class="tl-status done">완료</span>
+          </div>
+          <div class="tl-title">기획 & 일정 수립</div>
+          <div class="tl-items">WBS · ADR 3개 · CLAUDE.md · AGENTS.md · BONUS.md</div>
+        </div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-card">
+          <div class="tl-head">
+            <span class="tl-week">세션 3 · 11주차</span>
+            <span class="tl-status done">완료</span>
+          </div>
+          <div class="tl-title">설계 & 환경 구축</div>
+          <div class="tl-items">ARCHITECTURE.md · SETUP.md · 레이어 구조 · 빌드 가능 상태</div>
+        </div>
+      </div>
+      <div class="tl-item ing">
+        <div class="tl-card">
+          <div class="tl-head">
+            <span class="tl-week">세션 4 · 12주차 — 현재</span>
+            <span class="tl-status ing">진행중</span>
+          </div>
+          <div class="tl-title">구현 1 + 중간 발표</div>
+          <div class="tl-items">세션 설정 화면 ✓ · AI 질문 생성 · ML Kit 시선 분석 · 중간 발표</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-card">
+          <div class="tl-head">
+            <span class="tl-week">세션 5 · 13주차</span>
+            <span class="tl-status todo">예정</span>
+          </div>
+          <div class="tl-title">구현 2 + 테스트</div>
+          <div class="tl-items">피드백 리포트 · 히스토리 저장 · 오류 처리 · 테스트 작성</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-card">
+          <div class="tl-head">
+            <span class="tl-week">세션 6–7 · 14–15주차</span>
+            <span class="tl-status todo">예정</span>
+          </div>
+          <div class="tl-title">마감 · 배포 · 최종 발표</div>
+          <div class="tl-items">Firebase 배포 · 문서 완비 · 시연 · Q&A</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <span class="section-title">현재 진행률</span>
+    </div>
+    <div class="progress-grid">
+      <div class="stat-card">
+        <div class="stat-num">4/7</div>
+        <div class="stat-label">세션 진행</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">5/5</div>
+        <div class="stat-label">문서 점수</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">25</div>
+        <div class="stat-label">커밋</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">98%</div>
+        <div class="stat-label">Dart 비중</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINKS -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <span class="section-title">문서 & 링크</span>
+    </div>
+    <div class="link-grid">
+      <a class="link-card" href="https://github.com/thswjdguq/v-view" target="_blank">
+        <span class="link-icon">📦</span>
+        <div class="link-text">
+          <div class="link-title">GitHub 저장소</div>
+          <div class="link-sub">thswjdguq/v-view</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+      <a class="link-card" href="https://github.com/thswjdguq/v-view/blob/main/docs/ARCHITECTURE.md" target="_blank">
+        <span class="link-icon">🏗️</span>
+        <div class="link-text">
+          <div class="link-title">아키텍처 문서</div>
+          <div class="link-sub">레이어드 구조 설계</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+      <a class="link-card" href="https://github.com/thswjdguq/v-view/tree/main/docs/ADR" target="_blank">
+        <span class="link-icon">📋</span>
+        <div class="link-text">
+          <div class="link-title">ADR 의사결정 기록</div>
+          <div class="link-sub">기술 선택 근거</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+      <a class="link-card" href="https://github.com/thswjdguq/v-view/blob/main/md/WBS.md" target="_blank">
+        <span class="link-icon">📅</span>
+        <div class="link-text">
+          <div class="link-title">WBS 상세</div>
+          <div class="link-sub">작업 분류 및 일정</div>
+        </div>
+        <span class="link-arrow">→</span>
+      </a>
+    </div>
+    <div style="margin-top:24px;text-align:center">
+      <a class="cta" href="./slides.html">▶ 발표 슬라이드 보기</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    © 2026 v-view · Vibe Coding Project · 세션 4 중간발표
+  </div>
+
+</div>
+</body>
+</html>
