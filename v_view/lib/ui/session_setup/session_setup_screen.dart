@@ -48,6 +48,22 @@ class SessionSetupScreen extends ConsumerWidget {
               maxLines: 6,
               maxLength: 500,
             ),
+            const SizedBox(height: 20),
+            _SegmentRow(
+              label: '질문 수',
+              options: const [3, 5, 7],
+              selected: input.questionCount,
+              labelBuilder: (v) => '$v개',
+              onChanged: notifier.setQuestionCount,
+            ),
+            const SizedBox(height: 12),
+            _SegmentRow(
+              label: '질문당 시간',
+              options: const [1, 2, 3],
+              selected: input.timerMinutes,
+              labelBuilder: (v) => '$v분',
+              onChanged: notifier.setTimerMinutes,
+            ),
             const SizedBox(height: 8),
             const Text(
               '※ 원본 영상/오디오는 저장되지 않습니다. 입력 텍스트와 시선 지표만 기기 로컬에 저장됩니다.',
@@ -71,6 +87,60 @@ class SessionSetupScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SegmentRow<T> extends StatelessWidget {
+  final String label;
+  final List<T> options;
+  final T selected;
+  final String Function(T) labelBuilder;
+  final ValueChanged<T> onChanged;
+
+  const _SegmentRow({
+    required this.label,
+    required this.options,
+    required this.selected,
+    required this.labelBuilder,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 6),
+        Row(
+          children: options.map((opt) {
+            final isSelected = opt == selected;
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: isSelected
+                        ? Theme.of(context).colorScheme.primary
+                        : null,
+                    foregroundColor: isSelected
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : null,
+                    side: BorderSide(
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.grey.shade400,
+                    ),
+                  ),
+                  onPressed: () => onChanged(opt),
+                  child: Text(labelBuilder(opt)),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }

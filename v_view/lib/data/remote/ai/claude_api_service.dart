@@ -6,9 +6,10 @@ import '../../../domain/interview/interview_question.dart';
 import '../../../domain/report/session_report.dart';
 import '../../../domain/gaze/gaze_metrics.dart';
 
+// OpenAI API 기반 AI 서비스 (gpt-4o-mini)
 class ClaudeApiService {
-  static const _baseUrl = 'https://api.anthropic.com/v1';
-  static const _model = 'claude-sonnet-4-6';
+  static const _baseUrl = 'https://api.openai.com/v1';
+  static const _model = 'gpt-4o-mini';
   static const _timeoutSeconds = 30;
 
   late final Dio _dio;
@@ -19,9 +20,8 @@ class ClaudeApiService {
       connectTimeout: const Duration(seconds: _timeoutSeconds),
       receiveTimeout: const Duration(seconds: _timeoutSeconds),
       headers: {
-        'x-api-key': dotenv.env['ANTHROPIC_API_KEY'] ?? '',
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
+        'Authorization': 'Bearer ${dotenv.env['OPENAI_API_KEY'] ?? ''}',
+        'Content-Type': 'application/json',
       },
     ));
     _dio.interceptors.add(_NetworkErrorInterceptor());
@@ -31,12 +31,11 @@ class ClaudeApiService {
       '반드시 유효한 JSON만 반환하세요. 설명이나 마크다운 코드블록을 포함하지 마세요.';
 
   Future<List<InterviewQuestion>> generateQuestions(SessionInput input) async {
-    final response = await _dio.post('/messages', data: {
+    final response = await _dio.post('/chat/completions', data: {
       'model': _model,
-      'max_tokens': 1024,
-      'system': _jsonSystem,
       'messages': [
-        {'role': 'user', 'content': _buildQuestionPrompt(input)}
+        {'role': 'system', 'content': _jsonSystem},
+        {'role': 'user', 'content': _buildQuestionPrompt(input)},
       ],
     });
     return _parseQuestions(response.data);
@@ -46,12 +45,11 @@ class ClaudeApiService {
     required InterviewQuestion question,
     required String userAnswer,
   }) async {
-    final response = await _dio.post('/messages', data: {
+    final response = await _dio.post('/chat/completions', data: {
       'model': _model,
-      'max_tokens': 512,
-      'system': _jsonSystem,
       'messages': [
-        {'role': 'user', 'content': _buildFollowUpPrompt(question, userAnswer)}
+        {'role': 'system', 'content': _jsonSystem},
+        {'role': 'user', 'content': _buildFollowUpPrompt(question, userAnswer)},
       ],
     });
     return _parseFollowUp(response.data, question.id);
@@ -61,12 +59,11 @@ class ClaudeApiService {
     required List<QuestionAnswer> qaList,
     required GazeMetrics gazeMetrics,
   }) async {
-    final response = await _dio.post('/messages', data: {
+    final response = await _dio.post('/chat/completions', data: {
       'model': _model,
-      'max_tokens': 1024,
-      'system': _jsonSystem,
       'messages': [
-        {'role': 'user', 'content': _buildFeedbackPrompt(qaList, gazeMetrics)}
+        {'role': 'system', 'content': _jsonSystem},
+        {'role': 'user', 'content': _buildFeedbackPrompt(qaList, gazeMetrics)},
       ],
     });
     return _parseFeedback(response.data);
@@ -78,7 +75,7 @@ class ClaudeApiService {
       InterviewType.personality => '인성면접',
       InterviewType.university => '대학입시면접',
     };
-    return '''당신은 면접관입니다. 아래 정보를 바탕으로 $typeName 예상 질문 3개를 JSON 배열로 생성하세요.
+    return '''당신은 면접관입니다. 아래 정보를 바탕으로 $typeName 예상 질문 ${input.questionCount}개를 JSON 배열로 생성하세요.
 직종/전공: ${input.position}
 회사/학교: ${input.company}
 자기소개서: ${input.selfIntroduction}
@@ -115,8 +112,12 @@ $qaText
 형식: [{"title":"개선항목","description":"상세설명","evidenceMetric":"근거지표"},...]''';
   }
 
+  // OpenAI 응답: choices[0].message.content
+  String _extractContent(Map<String, dynamic> data) =>
+      data['choices'][0]['message']['content'] as String;
+
   List<InterviewQuestion> _parseQuestions(Map<String, dynamic> data) {
-    final text = data['content'][0]['text'] as String;
+    final text = _extractContent(data);
     final list = (_extractJson(text) as List).cast<Map<String, dynamic>>();
     return list
         .map((q) => InterviewQuestion(
@@ -128,7 +129,7 @@ $qaText
   }
 
   InterviewQuestion _parseFollowUp(Map<String, dynamic> data, String parentId) {
-    final text = data['content'][0]['text'] as String;
+    final text = _extractContent(data);
     final q = _extractJson(text) as Map<String, dynamic>;
     return InterviewQuestion(
       id: 'fu_${DateTime.now().millisecondsSinceEpoch}',
@@ -140,7 +141,7 @@ $qaText
   }
 
   List<ImprovementPoint> _parseFeedback(Map<String, dynamic> data) {
-    final text = data['content'][0]['text'] as String;
+    final text = _extractContent(data);
     final list = (_extractJson(text) as List).cast<Map<String, dynamic>>();
     return list
         .map((p) => ImprovementPoint(

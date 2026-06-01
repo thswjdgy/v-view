@@ -31,6 +31,8 @@ class SessionInputNotifier extends StateNotifier<SessionInput> {
   void setCompany(String v) => update(state.copyWith(company: v));
   void setSelfIntroduction(String v) =>
       update(state.copyWith(selfIntroduction: v));
+  void setQuestionCount(int v) => update(state.copyWith(questionCount: v));
+  void setTimerMinutes(int v) => update(state.copyWith(timerMinutes: v));
 
   bool get isValid =>
       state.position.trim().isNotEmpty &&

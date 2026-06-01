@@ -24,7 +24,8 @@ class _InterviewScreenState extends ConsumerState<InterviewScreen>
     with WidgetsBindingObserver {
   Timer? _timer;
   final _answerController = TextEditingController();
-  static const _defaultTimerSeconds = 120;
+  int get _defaultTimerSeconds =>
+      ref.read(sessionInputProvider).timerMinutes * 60;
 
   CameraController? _cameraController;
   bool _cameraReady = false;
