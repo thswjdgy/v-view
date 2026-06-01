@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "702947365573",
+    "project_id": "helpflow-760d1",
+    "storage_bucket": "helpflow-760d1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702947365573:android:3ec95f1f49f72e94bc56ac",
+        "android_client_info": {
+          "package_name": "com.vview.v_view"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_TiXqZ7VjW6RQXlyi-z6mP8SC8Xfwfaw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
