@@ -180,24 +180,27 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  margin-bottom: 14px;
+  margin-bottom: 0;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  min-height: 58px;
 }
-.prob-item:last-child { margin-bottom: 0; }
+.prob-item:last-child { border-bottom: none; padding-bottom: 0; }
 .prob-arrow {
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 3px;
   color: rgba(255,255,255,0.7);
 }
 .prob-item-main {
   font-size: 0.92rem;
   font-weight: 600;
   color: var(--white);
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 .prob-item-sub {
   font-size: 0.78rem;
   color: rgba(255,255,255,0.7);
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .sol-box { padding: 0 4px; }
@@ -205,34 +208,37 @@
   font-size: 1rem;
   font-weight: 700;
   color: var(--text-dark);
-  margin-bottom: 18px;
+  margin-bottom: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
 }
 .sol-item {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  margin-bottom: 18px;
-  padding-bottom: 18px;
+  padding: 11px 0;
   border-bottom: 1px solid var(--border);
+  min-height: 58px;
 }
-.sol-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.sol-item:last-child { border-bottom: none; padding-bottom: 0; }
 .sol-arrow { flex-shrink: 0; margin-top: 3px; color: var(--blue-main); }
 .sol-item-main {
   font-size: 0.92rem;
   font-weight: 600;
   color: var(--text-dark);
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 .sol-item-sub {
   font-size: 0.78rem;
   color: var(--text-muted);
-  line-height: 1.4;
-  margin-bottom: 2px;
+  line-height: 1.45;
+  margin-bottom: 3px;
 }
 .sol-item-why {
   font-size: 0.73rem;
   color: var(--blue-main);
   font-weight: 500;
+  line-height: 1.4;
 }
 
 /* ─────────────────────────────────────────────
@@ -827,7 +833,7 @@
   <div class="slide-num">03 / 06</div>
 
   <div class="slide-title">WBS & 진행 현황</div>
-  <div class="slide-sub">총 7주 프로젝트 일정 중 W5를 진행 중입니다. 기획부터 아키텍처 구축까지 전반부를 성공적으로 완료하였으며, 현재 핵심 기능 구현 2단계에 집중하고 있습니다.</div>
+  <div class="slide-sub">총 7주 프로젝트 일정 중 W6를 진행 중입니다. 기획부터 구현 2단계까지 전반부를 성공적으로 완료하였으며, 현재 중간발표 및 마감 작업에 집중하고 있습니다.</div>
 
   <div class="wbs-grid" id="wbsGrid">
 
@@ -879,28 +885,28 @@
       <div class="wbs-pct">100</div>
     </div>
 
-    <div class="wbs-row active">
+    <div class="wbs-row">
       <div class="wbs-label">
-        <div class="wbs-label-week">W5 · 06/01(월) <span class="star-badge">★ 현재</span></div>
+        <div class="wbs-label-week">W5 · 06/01(월)</div>
         <div class="wbs-label-date">06/01 ~ 06/07</div>
         <div class="wbs-label-desc">구현 2 + 테스트</div>
+      </div>
+      <div class="wbs-bar-wrap">
+        <div class="wbs-bar done" style="--target-width:100%; width:0"></div>
+      </div>
+      <div class="wbs-pct">100</div>
+    </div>
+
+    <div class="wbs-row active">
+      <div class="wbs-label">
+        <div class="wbs-label-week">W6 · 06/08(월) <span class="star-badge">★ 현재</span></div>
+        <div class="wbs-label-date">06/08 ~ 06/14</div>
+        <div class="wbs-label-desc">중간발표 + 마감</div>
       </div>
       <div class="wbs-bar-wrap">
         <div class="wbs-bar active" style="--target-width:40%; width:0"></div>
       </div>
       <div class="wbs-pct" style="color:var(--blue-main)">40</div>
-    </div>
-
-    <div class="wbs-row">
-      <div class="wbs-label">
-        <div class="wbs-label-week">W6 · 06/08(월)</div>
-        <div class="wbs-label-date">06/08 ~ 06/14</div>
-        <div class="wbs-label-desc">중간발표 + 마감</div>
-      </div>
-      <div class="wbs-bar-wrap">
-        <div class="wbs-bar upcoming" style="width:3px"></div>
-      </div>
-      <div class="wbs-pct" style="color:var(--gray)">0</div>
     </div>
 
     <div class="wbs-row">
@@ -920,15 +926,15 @@
   <div class="wbs-status">
     <div class="wbs-status-card done-card">
       <div class="card-tag">완료</div>
-      <div class="card-val">W1–W4 / 100%</div>
+      <div class="card-val">W1–W5 / 100%</div>
     </div>
     <div class="wbs-status-card active-card">
       <div class="card-tag">진행 중</div>
-      <div class="card-val">W5 / 06/01 — 구현2+테스트</div>
+      <div class="card-val">W6 / 06/08 — 중간발표+마감</div>
     </div>
     <div class="wbs-status-card plan-card">
       <div class="card-tag">예정</div>
-      <div class="card-val">W6 중간발표(6/8) · W7 최종발표(6/15)</div>
+      <div class="card-val">W7 최종발표(6/15)</div>
     </div>
   </div>
 
@@ -1015,7 +1021,7 @@
 <div class="slide">
   <div class="slide-num">05 / 06</div>
 
-  <div class="slide-title">구현된 핵심 기능</div>
+  <div class="slide-title" style="margin-bottom:24px;">구현된 핵심 기능</div>
 
   <div class="feat-layout">
     <div class="feat-list">
