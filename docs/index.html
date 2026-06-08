@@ -657,6 +657,42 @@
 }
 .github-btn:hover { background: var(--blue-dark); }
 
+/* ─────────────────────────────────────────────
+   SLIDE 7 — Demo Video
+───────────────────────────────────────────── */
+.video-frame {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.video-box {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(13,71,161,0.15);
+  background: #000;
+}
+.video-box iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: 0;
+}
+.video-caption {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.video-caption a {
+  color: var(--blue-main);
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+}
+.video-caption a:hover { text-decoration: underline; }
+
 /* ── Reveal overrides ── */
 .reveal .progress { color: var(--blue-main); }
 .reveal .controls { color: var(--blue-main); }
@@ -686,7 +722,7 @@
 ══════════════════════════════ -->
 <section>
 <div class="slide title-slide">
-  <div class="slide-num">01 / 06</div>
+  <div class="slide-num">01 / 07</div>
 
   <div class="brand">v-view</div>
 
@@ -722,7 +758,7 @@
 ══════════════════════════════ -->
 <section>
 <div class="slide">
-  <div class="slide-num">02 / 06</div>
+  <div class="slide-num">02 / 07</div>
 
   <div class="slide-title">혼자 하는 면접 연습엔<br>실전감도, 피드백도 없다</div>
   <div class="slide-sub">기존 면접 준비 방법은 비용, 주관성, 방향 부재라는 한계를 안고 있습니다.<br>v-view는 이 세 가지 문제를 AI와 온디바이스 분석으로 정면 돌파합니다.</div>
@@ -830,7 +866,7 @@
 ══════════════════════════════ -->
 <section>
 <div class="slide">
-  <div class="slide-num">03 / 06</div>
+  <div class="slide-num">03 / 07</div>
 
   <div class="slide-title">WBS & 진행 현황</div>
   <div class="slide-sub">총 7주 프로젝트 일정 중 W6를 진행 중입니다. 기획부터 구현 2단계까지 전반부를 성공적으로 완료하였으며, 현재 중간발표 및 마감 작업에 집중하고 있습니다.</div>
@@ -946,7 +982,7 @@
 ══════════════════════════════ -->
 <section>
 <div class="slide">
-  <div class="slide-num">04 / 06</div>
+  <div class="slide-num">04 / 07</div>
 
   <div class="slide-title">시스템 아키텍처</div>
   <div class="slide-sub">단방향 의존성 원칙을 엄격히 준수합니다. UI 레이어는 Data 레이어를 직접 참조하지 않으며, 각 계층은 명확히 분리된 책임을 가집니다.</div>
@@ -1019,7 +1055,7 @@
 ══════════════════════════════ -->
 <section>
 <div class="slide">
-  <div class="slide-num">05 / 06</div>
+  <div class="slide-num">05 / 07</div>
 
   <div class="slide-title" style="margin-bottom:24px;">구현된 핵심 기능</div>
 
@@ -1139,7 +1175,7 @@
 ══════════════════════════════ -->
 <section>
 <div class="slide">
-  <div class="slide-num">06 / 06</div>
+  <div class="slide-num">06 / 07</div>
 
   <div class="slide-title">다음 목표 & 링크</div>
   <div class="slide-sub">중간발표 이후 남은 3주 동안 기능 완성, 배포, 그리고 최종 발표를 단계적으로 진행합니다. 각 단계별 명확한 산출물을 목표로 합니다.</div>
@@ -1232,6 +1268,32 @@
     <a class="github-btn" href="https://github.com/thswjdguq/v-view" target="_blank">저장소 바로가기</a>
   </div>
 
+</div>
+</section>
+
+<!-- ══════════════════════════════
+     SLIDE 7 — Demo Video
+══════════════════════════════ -->
+<section>
+<div class="slide" style="justify-content:center;">
+  <div class="slide-num">07 / 07</div>
+
+  <div class="slide-title" style="text-align:center;">앱 데모 영상</div>
+  <div class="slide-sub" style="text-align:center;margin-bottom:24px;">v-view의 실제 동작 화면입니다. 아래 재생 버튼을 눌러 바로 확인하세요.</div>
+
+  <div class="video-frame">
+    <div class="video-box">
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/nBDNsB4vvYc?rel=0"
+        title="v-view 데모 영상"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+    <div class="video-caption">
+      영상이 안 보이면 →
+      <a href="https://www.youtube.com/watch?v=nBDNsB4vvYc" target="_blank">youtube.com/watch?v=nBDNsB4vvYc</a>
+    </div>
+  </div>
 </div>
 </section>
 
