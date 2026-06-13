@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:animate_do/animate_do.dart';
-import '../../app.dart' show kPrimaryColor, kSecondaryColor, kTextColor;
+import '../../theme/app_theme.dart';
 import '../../state/history/history_provider.dart';
 import '../../state/auth/auth_provider.dart' show authStateProvider, authNotifierProvider;
 import '../../domain/history/session_history.dart';
@@ -19,24 +19,30 @@ class HistoryListScreen extends ConsumerWidget {
     final items = ref.watch(historyProvider);
     final firebaseUser = ref.watch(authStateProvider).valueOrNull;
     final userName = firebaseUser?.displayName ?? firebaseUser?.email ?? '';
+    final firstName = userName.contains('@')
+        ? userName.split('@').first
+        : userName.isNotEmpty
+            ? userName
+            : '면접러';
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surfaceContainerLowest,
         elevation: 0,
         title: Text(
           'v-view',
           style: TextStyle(
-            color: kTextColor,
-            fontWeight: FontWeight.w800,
+            color: AppColors.primaryContainer,
+            fontWeight: FontWeight.w900,
             fontSize: 22,
+            letterSpacing: -0.5,
           ),
         ),
         actions: [
           if (items.isNotEmpty)
             IconButton(
-              icon: const Icon(Icons.delete_sweep),
+              icon: const Icon(Icons.delete_sweep_outlined),
               tooltip: '전체 삭제',
               onPressed: () => _confirmDeleteAll(context, ref),
             ),
@@ -47,7 +53,8 @@ class HistoryListScreen extends ConsumerWidget {
               if (userName.isNotEmpty)
                 PopupMenuItem(
                   enabled: false,
-                  child: Text(userName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  child: Text(userName,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
                 ),
               const PopupMenuItem(
                 value: 'signout',
@@ -68,37 +75,75 @@ class HistoryListScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: items.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: FadeInUp(
-                  child: Text(
-                    '아직 연습 기록이 없어요.\n첫 면접을 시작해보세요!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: kTextColor,
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: _GreetingHeader(firstName: firstName, count: items.length),
+          ),
+          if (items.isEmpty)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: FadeInUp(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 72,
+                          height: 72,
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceContainer,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.mic_none_rounded,
+                              size: 36, color: AppColors.primaryContainer),
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          '아직 연습 기록이 없어요.',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          '첫 면접을 시작해보세요!',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
             )
-          : ListView.builder(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 120),
-              itemCount: items.length,
-              itemBuilder: (_, i) => FadeInUp(
-                delay: Duration(milliseconds: 60 * i),
-                from: 24,
-                child: _HistoryCard(item: items[i]),
+          else
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 120),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (_, i) => FadeInUp(
+                    delay: Duration(milliseconds: 50 * i),
+                    from: 20,
+                    child: _HistoryCard(item: items[i]),
+                  ),
+                  childCount: items.length,
+                ),
               ),
             ),
+        ],
+      ),
       bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+        minimum: const EdgeInsets.fromLTRB(20, 0, 20, 16),
         child: _DuoButton(
           label: '새 면접 시작',
-          icon: Icons.mic,
+          icon: Icons.mic_rounded,
           onPressed: () => Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const SessionSetupScreen()),
@@ -119,7 +164,7 @@ class HistoryListScreen extends ConsumerWidget {
             onPressed: () => Navigator.pop(context),
             child: const Text('취소'),
           ),
-          FilledButton(
+          ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               ref.read(historyProvider.notifier).deleteAll();
@@ -132,9 +177,80 @@ class HistoryListScreen extends ConsumerWidget {
   }
 }
 
+class _GreetingHeader extends StatelessWidget {
+  final String firstName;
+  final int count;
+  const _GreetingHeader({required this.firstName, required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '안녕하세요, $firstName님!',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              color: AppColors.onSurface,
+              letterSpacing: -0.5,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '오늘도 면접 실력을 키워봐요.',
+            style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant),
+          ),
+          if (count > 0) ...[
+            const SizedBox(height: 16),
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.primaryContainer.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                    color: AppColors.primaryContainer.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.emoji_events_rounded,
+                      color: AppColors.primaryContainer, size: 20),
+                  const SizedBox(width: 10),
+                  Text(
+                    '총 $count회 연습 완료',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.onPrimaryContainer,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: 16),
+          const Divider(height: 1),
+          const SizedBox(height: 12),
+          Text(
+            '최근 연습 기록',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: AppColors.onSurface,
+            ),
+          ),
+          const SizedBox(height: 4),
+        ],
+      ),
+    );
+  }
+}
+
 class _HistoryCard extends ConsumerWidget {
   final SessionHistoryItem item;
-
   const _HistoryCard({required this.item});
 
   @override
@@ -145,28 +261,29 @@ class _HistoryCard extends ConsumerWidget {
       InterviewType.university => '대학입시',
     };
     final dateStr = DateFormat('yyyy.MM.dd HH:mm').format(item.createdAt);
+    final gazeRate = item.gazeRate;
+    final gazeColor = gazeRate >= 70
+        ? AppColors.primaryContainer
+        : gazeRate >= 40
+            ? const Color(0xFFFF9600)
+            : AppColors.secondaryContainer;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: kSecondaryColor, width: 2),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        title: Text(
-          '$typeName · ${item.position}',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kTextColor),
-        ),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: Text(
-            '$dateStr · 응시율 ${item.gazeRate.toStringAsFixed(0)}%',
-            style: const TextStyle(fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w600),
+        border: Border.all(color: AppColors.outlineVariant, width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.cardShadow,
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
-        ),
-        trailing: const Icon(Icons.chevron_right, color: kPrimaryColor),
+        ],
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
         onTap: () {
           final report = ref.read(reportProvider.notifier).loadById(item.id);
           if (report != null) {
@@ -183,6 +300,80 @@ class _HistoryCard extends ConsumerWidget {
           }
         },
         onLongPress: () => _confirmDelete(context, ref),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryContainer
+                                .withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            typeName,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.onPrimaryContainer,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            item.position,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.onSurface,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      dateStr,
+                      style: TextStyle(
+                          fontSize: 13, color: AppColors.onSurfaceVariant),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${gazeRate.toStringAsFixed(0)}%',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                      color: gazeColor,
+                    ),
+                  ),
+                  Text(
+                    '응시율',
+                    style: TextStyle(
+                        fontSize: 11, color: AppColors.onSurfaceVariant),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 4),
+              Icon(Icons.chevron_right, color: AppColors.outlineVariant),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -198,7 +389,7 @@ class _HistoryCard extends ConsumerWidget {
             onPressed: () => Navigator.pop(context),
             child: const Text('취소'),
           ),
-          FilledButton(
+          ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               ref.read(historyProvider.notifier).delete(item.id);
@@ -211,13 +402,12 @@ class _HistoryCard extends ConsumerWidget {
   }
 }
 
-/// Duolingo 스타일 큰 CTA 버튼 — 두꺼운 하단 그림자, 누르면 아래로 이동
 class _DuoButton extends StatefulWidget {
   final String label;
   final IconData icon;
   final VoidCallback onPressed;
-
-  const _DuoButton({required this.label, required this.icon, required this.onPressed});
+  const _DuoButton(
+      {required this.label, required this.icon, required this.onPressed});
 
   @override
   State<_DuoButton> createState() => _DuoButtonState();
@@ -225,8 +415,6 @@ class _DuoButton extends StatefulWidget {
 
 class _DuoButtonState extends State<_DuoButton> {
   bool _pressed = false;
-
-  static const _shadowColor = Color(0xFF3730A3);
 
   @override
   Widget build(BuildContext context) {
@@ -240,23 +428,24 @@ class _DuoButtonState extends State<_DuoButton> {
         margin: EdgeInsets.only(top: _pressed ? 4 : 0),
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: kPrimaryColor,
+          color: AppColors.primaryContainer,
           borderRadius: BorderRadius.circular(16),
           border: Border(
-            bottom: BorderSide(color: _shadowColor, width: _pressed ? 0 : 4),
+            bottom: BorderSide(
+                color: AppColors.primaryShadow, width: _pressed ? 0 : 4),
           ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(widget.icon, color: Colors.white),
+            Icon(widget.icon, color: AppColors.onPrimaryContainer),
             const SizedBox(width: 8),
             Text(
               widget.label,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: AppColors.onPrimaryContainer,
                 fontSize: 18,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w800,
               ),
             ),
           ],

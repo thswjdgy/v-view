@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>v-view | AI Interview Practice</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config from Brand Anchors -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed": "#002019",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#410006",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-fixed": "#001b3e",
+                    "on-tertiary-container": "#004489",
+                    "inverse-primary": "#38debb",
+                    "secondary-fixed-dim": "#ffb3b0",
+                    "surface-container-high": "#e2e7ff",
+                    "inverse-on-surface": "#eef0ff",
+                    "secondary": "#ae2f34",
+                    "on-primary-container": "#004e40",
+                    "on-surface": "#131b30",
+                    "on-secondary": "#ffffff",
+                    "surface-variant": "#dae2ff",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#38debb",
+                    "on-secondary-container": "#6d0010",
+                    "primary-fixed": "#5ffbd6",
+                    "tertiary-fixed": "#d6e3ff",
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#006b58",
+                    "on-surface-variant": "#3c4a45",
+                    "on-background": "#131b30",
+                    "secondary-fixed": "#ffdad8",
+                    "outline": "#6b7a75",
+                    "inverse-surface": "#283046",
+                    "on-primary-fixed-variant": "#005142",
+                    "error": "#ba1a1a",
+                    "background": "#faf8ff",
+                    "on-error-container": "#93000a",
+                    "tertiary-container": "#87b3ff",
+                    "secondary-container": "#ff6b6b",
+                    "on-tertiary-fixed-variant": "#00468c",
+                    "surface-container-low": "#f2f3ff",
+                    "on-secondary-fixed-variant": "#8c1520",
+                    "primary": "#006b58",
+                    "surface-dim": "#d2d9f7",
+                    "primary-container": "#00c9a7",
+                    "tertiary-fixed-dim": "#a9c7ff",
+                    "outline-variant": "#bacac3",
+                    "surface-container": "#eaedff",
+                    "tertiary": "#005db8",
+                    "surface": "#faf8ff",
+                    "surface-container-highest": "#dae2ff",
+                    "surface-bright": "#faf8ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "xs": "4px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "container-max": "1200px",
+                    "unit": "4px",
+                    "xl": "40px",
+                    "gutter": "20px"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-md": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "display-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "label-bold": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "caption": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-sm": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-lg": [
+                            "Be Vietnam Pro"
+                    ]
+            },
+            "fontSize": {
+                    "display-lg-mobile": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "800"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "display-lg": [
+                            "40px",
+                            {
+                                    "lineHeight": "52px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "800"
+                            }
+                    ],
+                    "label-bold": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "caption": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-sm": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+        
+        .material-symbols-outlined.fill-icon {
+          font-variation-settings:
+          'FILL' 1,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+
+        /* Tactile Button Press Effect */
+        .btn-pressable {
+            transition: all 0.1s ease-in-out;
+        }
+        .btn-pressable:active {
+            transform: scale(0.98);
+        }
+
+        /* Progress Circle Animation */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 1s ease-out;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased pb-[88px] pt-[88px] max-w-[360px] mx-auto min-h-[800px] shadow-2xl relative overflow-x-hidden md:max-w-container-max md:shadow-none md:pb-0 md:pt-0 sm:border sm:border-surface-container-high sm:rounded-[32px] md:border-none md:rounded-none">
+<!-- Android Status Bar (Mobile Only) -->
+<div class="md:hidden bg-surface dark:bg-surface-dim absolute top-0 w-full z-[60] flex items-center justify-between px-4 h-6 text-on-surface">
+<div class="text-[12px] font-medium font-body-md pl-1">9:41</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="signal_cellular_4_bar">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="wifi">wifi</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="battery_full">battery_full</span>
+</div>
+</div>
+<!-- TopAppBar (Mobile) -->
+<header class="bg-surface dark:bg-surface-dim shadow-sm absolute top-6 w-full z-50 md:hidden flex items-center justify-between px-md h-16">
+<button class="text-primary dark:text-primary-fixed hover:bg-surface-container-low transition-colors active:scale-95 duration-200 w-12 h-12 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+</button>
+<div class="font-display-lg-mobile text-display-lg-mobile text-primary dark:text-primary-fixed font-black tracking-tight text-center flex-1 truncate">
+            v-view
+        </div>
+<button class="text-primary dark:text-primary-fixed hover:bg-surface-container-low transition-colors active:scale-95 duration-200 w-12 h-12 rounded-full flex items-center justify-center relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-3 right-3 w-2 h-2 bg-secondary-container rounded-full"></span>
+</button>
+</header>
+<!-- TopAppBar (Web Desktop View - Hide Bottom Nav) -->
+<nav class="hidden md:flex bg-surface shadow-sm fixed top-0 w-full z-50 items-center justify-between px-lg h-20 max-w-container-max mx-auto border-b-0">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary fill-icon text-3xl" data-icon="smart_toy">smart_toy</span>
+<div class="font-display-lg text-display-lg text-primary font-black tracking-tight">
+                v-view
+            </div>
+</div>
+<div class="flex gap-8">
+<a class="text-primary font-bold font-label-bold flex items-center gap-2 relative group" href="#">
+<span class="material-symbols-outlined fill-icon" data-icon="home">home</span>
+                Home
+                <span class="absolute -bottom-7 left-0 w-full h-1 bg-primary rounded-t-lg"></span>
+</a>
+<a class="text-on-surface-variant font-label-bold hover:text-primary transition-colors flex items-center gap-2" href="#">
+<span class="material-symbols-outlined" data-icon="fitness_center">fitness_center</span>
+                Practice
+            </a>
+<a class="text-on-surface-variant font-label-bold hover:text-primary transition-colors flex items-center gap-2" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+                History
+            </a>
+<a class="text-on-surface-variant font-label-bold hover:text-primary transition-colors flex items-center gap-2" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+                My Page
+            </a>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors p-2 rounded-full flex items-center justify-center relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2.5 h-2.5 bg-secondary-container rounded-full border-2 border-surface"></span>
+</button>
+<div class="w-10 h-10 rounded-full bg-surface-container-high border-2 border-primary-container overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0iajKwbGuUOLUp65dOuQxBtr7exLha6F8akTb2BtamNOwxLLlIVYgtX6_Cl54mq2eyADVVS6SbsWg_tgovtQW_JH5T-a15c7O5c4FounjQmeewj8_YftaCFr5AzvnJgK7MWsjyxkj_yhc4PhsYZglcQlmxuuZt8gqP95sdgvxumlwThuEind3-ONR64ulni67lund7WwvAQofKYjvc9XmOX8R-ePPRwr6T6d8ZN2rV5TusmiL41NSIcaarMOaaAY_O9d8LEsmgqKL"/>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="px-md md:px-lg py-lg md:pt-32 space-y-8 w-full">
+<!-- Header Section -->
+<section class="mb-8">
+<h1 class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">
+                안녕하세요 👋<br class="md:hidden"/> 오늘도 연습해볼까요?
+            </h1>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<!-- Motivational Progress Card (Left/Top) -->
+<div class="md:col-span-4 bg-[#F5F7FA] rounded-[20px] p-lg shadow-[0_4px_12px_rgba(26,34,56,0.05)] border border-surface-container flex flex-col justify-between">
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-label-bold text-label-bold text-on-surface-variant uppercase tracking-wider">주간 목표 진행도</h2>
+<div class="flex items-center gap-1 bg-surface rounded-full px-3 py-1 shadow-sm border border-surface-container-high">
+<span class="material-symbols-outlined text-secondary-container fill-icon text-sm" data-icon="local_fire_department">local_fire_department</span>
+<span class="font-label-bold text-label-bold text-secondary-container">7일 연속!</span>
+</div>
+</div>
+<div class="flex items-end justify-between items-center">
+<div>
+<p class="font-caption text-caption text-on-surface-variant mb-1">최근 평균 점수</p>
+<div class="flex items-baseline gap-1">
+<span class="font-display-lg text-display-lg font-black text-primary">85</span>
+<span class="font-headline-sm text-headline-sm text-on-surface-variant">점</span>
+</div>
+</div>
+<!-- Progress Bar Component -->
+<div class="w-24 h-24 relative">
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<!-- Background Circle -->
+<circle class="text-surface-container-high stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-width="10"></circle>
+<!-- Progress Circle -->
+<circle class="text-primary stroke-current progress-ring__circle" cx="50" cy="50" fill="transparent" r="40" stroke-dasharray="251.2" stroke-dashoffset="37.68" stroke-linecap="round" stroke-width="10"></circle> <!-- 85% -->
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="emoji_events">emoji_events</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Primary CTA Card (Right/Bottom) -->
+<div class="md:col-span-8 bg-surface rounded-[24px] p-0 shadow-[0_4px_12px_rgba(26,34,56,0.05)] border border-surface-container overflow-hidden relative group">
+<div class="absolute inset-0 bg-gradient-to-br from-surface-container-low to-surface-container opacity-50 z-0"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-center justify-between p-lg h-full gap-8">
+<div class="flex-1 space-y-6 text-center md:text-left pt-4 md:pt-0 w-full">
+<div>
+<span class="inline-block px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed-variant rounded-full font-caption text-caption font-bold mb-3">AI 모의면접</span>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface mb-2">실전처럼 완벽하게<br/>준비해볼까요?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-sm mx-auto md:mx-0">V-Bot이 맞춤형 질문과 피드백으로 면접 실력을 높여드려요.</p>
+</div>
+<button class="w-full md:w-auto bg-primary-container text-on-primary-container font-label-bold text-lg font-bold min-h-[48px] py-4 px-8 rounded-xl btn-pressable hover:brightness-105 flex items-center justify-center gap-2">
+                            면접 연습 시작하기
+                            <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="w-48 md:w-64 flex-shrink-0 relative transform group-hover:scale-105 transition-transform duration-500 pb-4 md:pb-0 mx-auto">
+<!-- Mascot Image Placeholder -->
+<img alt="A friendly 3D rendered robot mascot named V-Bot" class="w-full h-auto drop-shadow-xl" src="https://lh3.googleusercontent.com/aida/AP1WRLtOetmcxcUJhuWmPV0bsLQCo_Ev2pa96QTn2gxcE5T_Y1X1BE_pDjKgidD7FYLxiUweY3tFdK0aIWyXnFeGHPibTt49VlBrEmaUxEp5M4pYj9R5XQRy_46rY2GMAJUWIxvDDpzHyJblSYZErg24DcvwpDIdG-63_Jx7yC_rOtQPP0Xn34neUQVYtEQ5laD6O45zwyW59SWahGGMM3cXTdrKxOKVDJQnkaN05zSu8vz1Ix4lowFPRN5CtWJB"/>
+<!-- Floating Chat Bubble effect -->
+<div class="absolute -top-4 -left-4 bg-surface px-4 py-2 rounded-2xl rounded-br-sm shadow-md border border-surface-container animate-bounce" style="animation-duration: 3s;">
+<p class="font-label-bold text-label-bold text-primary">화이팅! 🎯</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity Section -->
+<section class="mt-xl">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">최근 연습 기록</h3>
+<a class="font-label-bold text-label-bold text-primary hover:underline flex items-center min-h-[48px] px-2 -mr-2" href="#">
+                    전체보기 <span class="material-symbols-outlined text-sm ml-1" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- History Item 1 -->
+<div class="bg-surface rounded-xl p-md border border-surface-container hover:border-primary-container transition-colors shadow-sm cursor-pointer group flex flex-col justify-between min-h-[140px]">
+<div>
+<div class="flex justify-between items-start mb-3">
+<span class="font-caption text-caption text-on-surface-variant bg-surface-container px-2 py-1 rounded">2023.10.24</span>
+<button class="w-8 h-8 flex items-center justify-center -mr-2 -mt-2 rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<h4 class="font-label-bold text-label-bold text-on-surface text-lg mb-1 line-clamp-1">삼성전자 마케팅 직무</h4>
+<p class="font-caption text-caption text-on-surface-variant flex items-center gap-1 mb-4">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> 15분 진행
+                        </p>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 relative">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-surface-container-high stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+<path class="text-primary stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="92, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-label-bold text-[10px] text-primary">92</div>
+</div>
+<span class="font-label-bold text-caption text-on-surface-variant">우수함</span>
+</div>
+<span class="material-symbols-outlined text-surface-variant group-hover:text-primary-container transition-colors" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+<!-- History Item 2 -->
+<div class="bg-surface rounded-xl p-md border border-surface-container hover:border-primary-container transition-colors shadow-sm cursor-pointer group flex flex-col justify-between min-h-[140px]">
+<div>
+<div class="flex justify-between items-start mb-3">
+<span class="font-caption text-caption text-on-surface-variant bg-surface-container px-2 py-1 rounded">2023.10.22</span>
+<button class="w-8 h-8 flex items-center justify-center -mr-2 -mt-2 rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<h4 class="font-label-bold text-label-bold text-on-surface text-lg mb-1 line-clamp-1">네이버 프론트엔드 개발</h4>
+<p class="font-caption text-caption text-on-surface-variant flex items-center gap-1 mb-4">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> 20분 진행
+                        </p>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 relative">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-surface-container-high stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+<path class="text-secondary-container stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="78, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-label-bold text-[10px] text-secondary-container">78</div>
+</div>
+<span class="font-label-bold text-caption text-on-surface-variant">보통</span>
+</div>
+<span class="material-symbols-outlined text-surface-variant group-hover:text-primary-container transition-colors" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+<!-- History Item 3 -->
+<div class="bg-surface rounded-xl p-md border border-surface-container hover:border-primary-container transition-colors shadow-sm cursor-pointer group flex flex-col justify-between min-h-[140px] hidden md:flex">
+<div>
+<div class="flex justify-between items-start mb-3">
+<span class="font-caption text-caption text-on-surface-variant bg-surface-container px-2 py-1 rounded">2023.10.20</span>
+<button class="w-8 h-8 flex items-center justify-center -mr-2 -mt-2 rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<h4 class="font-label-bold text-label-bold text-on-surface text-lg mb-1 line-clamp-1">카카오 인성 면접</h4>
+<p class="font-caption text-caption text-on-surface-variant flex items-center gap-1 mb-4">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> 10분 진행
+                        </p>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 relative">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-surface-container-high stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+<path class="text-primary stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="88, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center font-label-bold text-[10px] text-primary">88</div>
+</div>
+<span class="font-label-bold text-caption text-on-surface-variant">좋음</span>
+</div>
+<span class="material-symbols-outlined text-surface-variant group-hover:text-primary-container transition-colors" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Material 3 Mobile) -->
+<nav class="md:hidden bg-surface-container shadow-none border-t border-surface-container-high absolute bottom-0 w-full z-50 h-[80px] flex justify-around items-center px-2 pb-2 pt-3">
+<!-- Active Tab: Home -->
+<a class="flex flex-col items-center justify-center w-[64px] h-full cursor-pointer group" href="#">
+<div class="w-16 h-8 bg-secondary-container rounded-full flex items-center justify-center mb-1 group-active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined fill-icon text-on-secondary-container" data-icon="home">home</span>
+</div>
+<span class="font-label-bold text-[12px] text-on-surface font-bold">홈</span>
+</a>
+<!-- Inactive Tab: Practice -->
+<a class="flex flex-col items-center justify-center w-[64px] h-full cursor-pointer group" href="#">
+<div class="w-16 h-8 rounded-full flex items-center justify-center mb-1 group-hover:bg-surface-container-high group-active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="fitness_center">fitness_center</span>
+</div>
+<span class="font-label-bold text-[12px] text-on-surface-variant">연습</span>
+</a>
+<!-- Inactive Tab: History -->
+<a class="flex flex-col items-center justify-center w-[64px] h-full cursor-pointer group" href="#">
+<div class="w-16 h-8 rounded-full flex items-center justify-center mb-1 group-hover:bg-surface-container-high group-active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="history">history</span>
+</div>
+<span class="font-label-bold text-[12px] text-on-surface-variant">기록</span>
+</a>
+<!-- Inactive Tab: My Page -->
+<a class="flex flex-col items-center justify-center w-[64px] h-full cursor-pointer group" href="#">
+<div class="w-16 h-8 rounded-full flex items-center justify-center mb-1 group-hover:bg-surface-container-high group-active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="person">person</span>
+</div>
+<span class="font-label-bold text-[12px] text-on-surface-variant">마이</span>
+</a>
+</nav>
+<script>
+        // Trigger SVG circle animation on load
+        window.addEventListener('load', () => {
+            const circles = document.querySelectorAll('.progress-ring__circle');
+            circles.forEach(circle => {
+                // Force reflow to ensure transition works on load
+                void circle.offsetWidth;
+                // Currently set statically via stroke-dashoffset in HTML, 
+                // but this script block allows for future dynamic updates.
+            });
+        });
+    </script>
+</body></html>

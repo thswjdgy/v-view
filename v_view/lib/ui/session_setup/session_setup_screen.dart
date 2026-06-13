@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../app.dart' show kPrimaryColor, kSecondaryColor, kTextColor;
+import '../../theme/app_theme.dart';
 import '../../state/session_setup/session_setup_provider.dart';
 import 'session_confirm_screen.dart';
 import 'widgets/interview_type_selector.dart';
@@ -14,17 +14,14 @@ class SessionSetupScreen extends ConsumerWidget {
     final notifier = ref.read(sessionInputProvider.notifier);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.surfaceContainerLowest,
         elevation: 0,
-        title: Text(
-          '면접 세션 설정',
-          style: TextStyle(color: kTextColor, fontWeight: FontWeight.w800, fontSize: 20),
-        ),
+        title: const Text('면접 세션 설정'),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -34,7 +31,7 @@ class SessionSetupScreen extends ConsumerWidget {
               selected: input.type,
               onChanged: notifier.setType,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 4),
             _InputField(
               label: '직종 / 전공',
               hint: '예) 백엔드 개발자, 컴퓨터공학과',
@@ -74,9 +71,28 @@ class SessionSetupScreen extends ConsumerWidget {
               onChanged: notifier.setTimerMinutes,
             ),
             const SizedBox(height: 16),
-            const Text(
-              '※ 원본 영상/오디오는 저장되지 않습니다. 입력 텍스트와 시선 지표만 기기 로컬에 저장됩니다.',
-              style: TextStyle(fontSize: 13, color: Colors.black54, fontWeight: FontWeight.w600),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.outlineVariant),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.info_outline_rounded,
+                      size: 16, color: AppColors.primary),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      '원본 영상/오디오는 저장되지 않습니다. 입력 텍스트와 시선 지표만 기기 로컬에 저장됩니다.',
+                      style: TextStyle(
+                          fontSize: 13, color: AppColors.onSurfaceVariant),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 32),
             _DuoButton(
@@ -84,7 +100,8 @@ class SessionSetupScreen extends ConsumerWidget {
               enabled: notifier.isValid,
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const SessionConfirmScreen()),
+                MaterialPageRoute(
+                    builder: (_) => const SessionConfirmScreen()),
               ),
             ),
           ],
@@ -102,7 +119,10 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kTextColor),
+      style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: AppColors.onSurface),
     );
   }
 }
@@ -135,19 +155,22 @@ class _SegmentRow<T> extends StatelessWidget {
             return Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(right: 8),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(16),
+                child: GestureDetector(
                   onTap: () => onChanged(opt),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 150),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: isSelected ? kPrimaryColor.withValues(alpha: 0.1) : Colors.white,
-                      borderRadius: BorderRadius.circular(16),
+                      color: isSelected
+                          ? AppColors.primaryContainer.withValues(alpha: 0.15)
+                          : AppColors.surfaceContainerLowest,
+                      borderRadius: BorderRadius.circular(14),
                       border: Border.all(
-                        color: isSelected ? kPrimaryColor : kSecondaryColor,
-                        width: 2,
+                        color: isSelected
+                            ? AppColors.primaryContainer
+                            : AppColors.outlineVariant,
+                        width: isSelected ? 2 : 1.5,
                       ),
                     ),
                     child: Text(
@@ -155,7 +178,9 @@ class _SegmentRow<T> extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
-                        color: isSelected ? kPrimaryColor : kTextColor,
+                        color: isSelected
+                            ? AppColors.onPrimaryContainer
+                            : AppColors.onSurface,
                       ),
                     ),
                   ),
@@ -195,25 +220,8 @@ class _InputField extends StatelessWidget {
         const SizedBox(height: 10),
         TextFormField(
           initialValue: initialValue,
-          style: const TextStyle(fontSize: 16, color: kTextColor),
-          decoration: InputDecoration(
-            hintText: hint,
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: kSecondaryColor, width: 2),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: kSecondaryColor, width: 2),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: kPrimaryColor, width: 2),
-            ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          ),
+          style: TextStyle(fontSize: 16, color: AppColors.onSurface),
+          decoration: InputDecoration(hintText: hint),
           maxLines: maxLines,
           maxLength: maxLength,
           onChanged: onChanged,
@@ -223,13 +231,12 @@ class _InputField extends StatelessWidget {
   }
 }
 
-/// Duolingo 스타일 큰 CTA 버튼 — 두꺼운 하단 그림자, 누르면 아래로 이동
 class _DuoButton extends StatefulWidget {
   final String label;
   final VoidCallback onPressed;
   final bool enabled;
-
-  const _DuoButton({required this.label, required this.onPressed, this.enabled = true});
+  const _DuoButton(
+      {required this.label, required this.onPressed, this.enabled = true});
 
   @override
   State<_DuoButton> createState() => _DuoButtonState();
@@ -238,18 +245,23 @@ class _DuoButton extends StatefulWidget {
 class _DuoButtonState extends State<_DuoButton> {
   bool _pressed = false;
 
-  static const _shadowColor = Color(0xFF3730A3);
-
   @override
   Widget build(BuildContext context) {
-    final bg = widget.enabled ? kPrimaryColor : kSecondaryColor;
-    final shadow = widget.enabled ? _shadowColor : const Color(0xFFB0B0B0);
-    final fg = widget.enabled ? Colors.white : Colors.black45;
+    final bg = widget.enabled
+        ? AppColors.primaryContainer
+        : AppColors.surfaceContainerHigh;
+    final fg = widget.enabled
+        ? AppColors.onPrimaryContainer
+        : AppColors.onSurfaceVariant;
+    final shadow = widget.enabled
+        ? AppColors.primaryShadow
+        : AppColors.outlineVariant;
 
     return GestureDetector(
       onTapDown: widget.enabled ? (_) => setState(() => _pressed = true) : null,
       onTapUp: widget.enabled ? (_) => setState(() => _pressed = false) : null,
-      onTapCancel: widget.enabled ? () => setState(() => _pressed = false) : null,
+      onTapCancel:
+          widget.enabled ? () => setState(() => _pressed = false) : null,
       onTap: widget.enabled ? widget.onPressed : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 80),
@@ -261,12 +273,12 @@ class _DuoButtonState extends State<_DuoButton> {
           color: bg,
           borderRadius: BorderRadius.circular(16),
           border: Border(
-            bottom: BorderSide(color: shadow, width: _pressed ? 0 : 4),
-          ),
+              bottom: BorderSide(color: shadow, width: _pressed ? 0 : 4)),
         ),
         child: Text(
           widget.label,
-          style: TextStyle(color: fg, fontSize: 18, fontWeight: FontWeight.bold),
+          style:
+              TextStyle(color: fg, fontSize: 18, fontWeight: FontWeight.w800),
         ),
       ),
     );

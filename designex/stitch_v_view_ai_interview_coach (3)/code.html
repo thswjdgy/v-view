@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>v-view - Live Interview Practice</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#006b58",
+                        "surface-tint": "#006b58",
+                        "secondary": "#ae2f34",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#131b30",
+                        "inverse-surface": "#283046",
+                        "on-primary-fixed": "#002019",
+                        "on-primary-fixed-variant": "#005142",
+                        "inverse-on-surface": "#eef0ff",
+                        "on-tertiary-fixed-variant": "#00468c",
+                        "primary-fixed": "#5ffbd6",
+                        "inverse-primary": "#38debb",
+                        "background": "#faf8ff",
+                        "secondary-fixed-dim": "#ffb3b0",
+                        "tertiary-container": "#87b3ff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#d6e3ff",
+                        "on-tertiary-fixed": "#001b3e",
+                        "primary-fixed-dim": "#38debb",
+                        "on-secondary-fixed": "#410006",
+                        "surface-bright": "#faf8ff",
+                        "outline-variant": "#bacac3",
+                        "on-surface-variant": "#3c4a45",
+                        "surface": "#faf8ff",
+                        "surface-container-high": "#e2e7ff",
+                        "surface-container-highest": "#dae2ff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#005db8",
+                        "on-secondary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#00c9a7",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d2d9f7",
+                        "surface-container-low": "#f2f3ff",
+                        "surface-variant": "#dae2ff",
+                        "secondary-container": "#ff6b6b",
+                        "on-error": "#ffffff",
+                        "surface-container": "#eaedff",
+                        "on-secondary-fixed-variant": "#8c1520",
+                        "on-secondary-container": "#6d0010",
+                        "outline": "#6b7a75",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#ffdad8",
+                        "on-surface": "#131b30",
+                        "tertiary-fixed-dim": "#a9c7ff",
+                        "on-tertiary-container": "#004489",
+                        "on-primary-container": "#004e40"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "20px",
+                        "lg": "24px",
+                        "unit": "4px",
+                        "container-max": "1200px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "xl": "40px"
+                    },
+                    "fontFamily": {
+                        "caption": ["Be Vietnam Pro"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-bold": ["Plus Jakarta Sans"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "body-lg": ["Be Vietnam Pro"]
+                    },
+                    "fontSize": {
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "label-bold": ["14px", { "lineHeight": "20px", "fontWeight": "700" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "display-lg": ["40px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+<style>
+        body {
+            /* Standard Android mobile size constraint for preview purposes */
+            width: 360px;
+            height: 800px;
+            margin: 0 auto;
+            position: relative;
+            background-color: black;
+            overflow: hidden;
+            border-radius: 24px; /* Optional: just for visual framing if viewed on desktop */
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        @media (max-width: 360px) {
+            body {
+                width: 100vw;
+                height: 100dvh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-on-background relative font-body-md text-body-md text-on-surface">
+<!-- Background Camera View -->
+<div class="absolute inset-0 z-0">
+<img alt="Front camera view of a professional person" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9YsU8x2h1yczgJQy_b8TvTOGBA5q-P-nyr5ooKnNQm9ngW7415sSsrO1tGkB-oIg-OW3paoQglZqS8f4Op89apCgRrz6kFP-aGLwefgZ6iw_1s8LaKDAyH1j4BkabQ6_FgcHEnHb1Es6v3MSJp_9FGuFFn5Wr3VkidpNKkr8btBDmo_OKFfkpyqPgX_PLFHmiCrFk_shlGmDsLkGpW5vIZmQgV4F-_-2fvKyZDmAoRNaBkPJvlFV-jLeRmRGcJ7rqVqgODLmQ1Dtc"/>
+<div class="absolute inset-0 bg-gradient-to-b from-on-background/40 via-transparent to-on-background/70"></div>
+</div>
+<!-- Main UI Overlay -->
+<div class="relative z-10 w-full h-full flex flex-col justify-between">
+<!-- Top Area (Status Bar + Header + Question Card) -->
+<div class="w-full flex flex-col pt-2 px-md gap-md">
+<!-- Android Status Bar Mock -->
+<div class="w-full flex justify-between items-center text-surface-container-lowest h-6 text-xs font-medium">
+<span>12:30</span>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="network_wifi">network_wifi</span>
+<span class="material-symbols-outlined text-sm" data-icon="signal_cellular_4_bar">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-sm" data-icon="battery_full">battery_full</span>
+</div>
+</div>
+<!-- Header: Quit & Gaze Indicator -->
+<div class="flex justify-between items-start w-full mt-2">
+<!-- Quit Button -->
+<button class="bg-surface-container-lowest/20 hover:bg-surface-container-lowest/30 backdrop-blur-md text-surface-container-lowest rounded-full p-2 transition-all flex items-center justify-center h-10 w-10 border border-surface-container-lowest/30 shadow-md">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+<!-- Gaze Indicator -->
+<div class="glass-panel rounded-full flex items-center gap-sm pr-3 pl-1 py-1 shadow-sm">
+<div class="relative w-8 h-8 flex items-center justify-center">
+<svg class="w-8 h-8" viewbox="0 0 100 100">
+<circle class="text-surface-container-high stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-width="10"></circle>
+<circle class="text-primary-container progress-ring__circle stroke-current" cx="50" cy="50" fill="transparent" r="40" stroke-dasharray="251.2" stroke-dashoffset="45.2" stroke-linecap="round" stroke-width="10"></circle>
+</svg>
+<span class="material-symbols-outlined absolute text-primary text-[14px]" data-icon="visibility">visibility</span>
+</div>
+<div class="flex flex-col">
+<span class="font-caption text-[10px] leading-tight text-on-surface-variant">시선 집중도</span>
+<span class="font-label-bold text-xs text-primary font-bold">82%</span>
+</div>
+</div>
+</div>
+<!-- Question Card -->
+<div class="glass-panel w-full rounded-2xl p-md shadow-lg flex flex-col gap-sm relative overflow-hidden mt-2">
+<div class="absolute -top-4 -right-4 opacity-10">
+<span class="material-symbols-outlined text-[80px] text-primary" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="bg-secondary-container/20 text-secondary font-caption text-caption px-2 py-0.5 rounded-full border border-secondary/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="record_voice_over" style="font-variation-settings: 'FILL' 1;">record_voice_over</span>
+                        직무 역량
+                    </span>
+<span class="text-on-surface-variant font-caption text-[10px]">질문 3/8</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface leading-tight">
+                    본인의 강점이 이 직무에 어떻게 기여할 수 있는지 설명해 주세요.
+                </h2>
+<p class="font-caption text-caption text-on-surface-variant mt-1">
+                    구체적인 사례를 들어 직무와의 연관성을 강조해 보세요. V-Bot이 핵심 키워드를 분석 중입니다.
+                </p>
+</div>
+</div>
+<!-- Bottom Control Bar -->
+<div class="w-full flex justify-between items-center glass-panel rounded-t-[24px] rounded-b-none p-4 pb-8 shadow-[0_-8px_32px_rgba(26,34,56,0.15)] mt-auto">
+<!-- Left: Question Counter -->
+<div class="flex-1 flex justify-start">
+<div class="bg-surface-container-high text-on-surface font-label-bold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-outline" data-icon="format_list_numbered">format_list_numbered</span>
+<span>3 / 8</span>
+</div>
+</div>
+<!-- Center: Recording Button -->
+<div class="flex-none flex justify-center px-4 relative">
+<button class="relative group outline-none focus:outline-none flex flex-col items-center">
+<div class="w-16 h-16 bg-primary-container rounded-full flex items-center justify-center shadow-md border-b-[3px] border-on-primary-fixed-variant transition-transform active:translate-y-0.5 active:border-b-0 z-10">
+<div class="absolute w-8 h-8 bg-surface-container-lowest rounded-sm flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="mic" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+</div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-primary-container/30 rounded-full animate-ping z-0" style="animation-duration: 2s;"></div>
+<span class="absolute -bottom-6 font-caption text-[10px] text-surface-container-lowest drop-shadow-md whitespace-nowrap">답변 중...</span>
+</button>
+</div>
+<!-- Right: Next Question Action -->
+<div class="flex-1 flex justify-end">
+<button class="bg-surface-container-lowest text-primary border border-primary-container font-label-bold text-xs px-3 py-2 rounded-lg flex items-center gap-1 transition-all shadow-sm active:translate-y-0.5">
+<div class="flex flex-col text-right">
+<span>다음</span>
+<span>질문</span>
+</div>
+<span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

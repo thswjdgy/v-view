@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../app.dart' show kPrimaryColor, kSecondaryColor, kTextColor;
+import '../../../theme/app_theme.dart';
 import '../../../domain/session_setup/session_input.dart';
 
 class InterviewTypeSelector extends StatelessWidget {
@@ -23,36 +23,47 @@ class InterviewTypeSelector extends StatelessWidget {
         };
         final isSelected = selected == type;
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(16),
+          padding: const EdgeInsets.only(bottom: 10),
+          child: GestureDetector(
             onTap: () => onChanged(type),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               decoration: BoxDecoration(
-                color: isSelected ? kPrimaryColor.withValues(alpha: 0.1) : Colors.white,
+                color: isSelected
+                    ? AppColors.primaryContainer.withValues(alpha: 0.12)
+                    : AppColors.surfaceContainerLowest,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: isSelected ? kPrimaryColor : kSecondaryColor,
-                  width: 2,
+                  color: isSelected
+                      ? AppColors.primaryContainer
+                      : AppColors.outlineVariant,
+                  width: isSelected ? 2 : 1.5,
                 ),
               ),
               child: Row(
                 children: [
-                  Icon(icon, color: isSelected ? kPrimaryColor : kTextColor, size: 28),
+                  Icon(icon,
+                      color: isSelected
+                          ? AppColors.primaryContainer
+                          : AppColors.onSurfaceVariant,
+                      size: 26),
                   const SizedBox(width: 16),
                   Text(
                     label,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w800,
-                      color: isSelected ? kPrimaryColor : kTextColor,
+                      color: isSelected
+                          ? AppColors.onPrimaryContainer
+                          : AppColors.onSurface,
                     ),
                   ),
                   const Spacer(),
                   if (isSelected)
-                    const Icon(Icons.check_circle_rounded, color: kPrimaryColor),
+                    Icon(Icons.check_circle_rounded,
+                        color: AppColors.primaryContainer, size: 20),
                 ],
               ),
             ),

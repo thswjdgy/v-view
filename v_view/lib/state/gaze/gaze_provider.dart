@@ -47,6 +47,8 @@ class GazeNotifier extends StateNotifier<GazeState> {
 
   GazeNotifier(this._analyzer) : super(const GazeState());
 
+  bool _processing = false;
+
   void start() => state = state.copyWith(isRunning: true, frames: []);
 
   void stop() {
@@ -55,13 +57,18 @@ class GazeNotifier extends StateNotifier<GazeState> {
   }
 
   Future<void> processFrame(InputImage inputImage) async {
-    if (!state.isRunning) return;
-    final frame = await _analyzer.analyze(inputImage);
-    state = state.copyWith(
-      frames: [...state.frames, frame],
-      isCurrentlyGazing: frame.isGazing,
-      faceDetected: frame.faceDetected,
-    );
+    if (!state.isRunning || _processing) return;
+    _processing = true;
+    try {
+      final frame = await _analyzer.analyze(inputImage);
+      state = state.copyWith(
+        frames: [...state.frames, frame],
+        isCurrentlyGazing: frame.isGazing,
+        faceDetected: frame.faceDetected,
+      );
+    } finally {
+      _processing = false;
+    }
   }
 
   void reset() => state = const GazeState();

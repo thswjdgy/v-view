@@ -18,7 +18,7 @@ class GazeAnalyzer {
 
   final FaceDetector _detector = FaceDetector(
     options: FaceDetectorOptions(
-      enableClassification: true,
+      enableClassification: false,
       enableLandmarks: false,
       enableTracking: false,
       performanceMode: FaceDetectorMode.fast,
