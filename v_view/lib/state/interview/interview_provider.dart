@@ -91,20 +91,22 @@ class InterviewNotifier extends StateNotifier<InterviewState> {
     submitAnswer(answer);
     final q = state.currentQuestion!;
 
-    if (answer.isNotEmpty) {
+    if (answer.isNotEmpty && _followUpDepth(q) < 2) {
       try {
         final followUp = await _api.generateFollowUp(
           question: q,
           userAnswer: answer,
         );
-        final updated = List<InterviewQuestion>.from(state.questions);
-        updated.insert(state.currentIndex + 1, followUp);
-        state = state.copyWith(
-          questions: updated,
-          currentIndex: state.currentIndex + 1,
-          phase: InterviewPhase.inProgress,
-        );
-        return;
+        if (followUp != null) {
+          final updated = List<InterviewQuestion>.from(state.questions);
+          updated.insert(state.currentIndex + 1, followUp);
+          state = state.copyWith(
+            questions: updated,
+            currentIndex: state.currentIndex + 1,
+            phase: InterviewPhase.inProgress,
+          );
+          return;
+        }
       } on Exception {
         // 꼬리 질문 실패 시 다음 기본 질문으로 진행
       }
@@ -116,6 +118,24 @@ class InterviewNotifier extends StateNotifier<InterviewState> {
       state = state.copyWith(currentIndex: state.currentIndex + 1);
     }
   }
+
+  // 현재 질문의 꼬리질문 깊이 반환 (기본 질문=0, 1차 꼬리=1, 2차 꼬리=2)
+  int _followUpDepth(InterviewQuestion q) {
+    if (!q.isFollowUp) return 0;
+    int depth = 1;
+    String? parentId = q.parentQuestionId;
+    while (parentId != null) {
+      final parents = state.questions.where((x) => x.id == parentId).toList();
+      if (parents.isEmpty) break;
+      final parent = parents.first;
+      if (!parent.isFollowUp) break;
+      depth++;
+      parentId = parent.parentQuestionId;
+    }
+    return depth;
+  }
+
+  void reset() => state = const InterviewState();
 
   void pause() => state = state.copyWith(phase: InterviewPhase.paused);
   void resume() => state = state.copyWith(phase: InterviewPhase.inProgress);

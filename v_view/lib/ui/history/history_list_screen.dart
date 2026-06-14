@@ -430,10 +430,12 @@ class _DuoButtonState extends State<_DuoButton> {
         decoration: BoxDecoration(
           color: AppColors.primaryContainer,
           borderRadius: BorderRadius.circular(16),
-          border: Border(
-            bottom: BorderSide(
-                color: AppColors.primaryShadow, width: _pressed ? 0 : 4),
-          ),
+          border: _pressed
+              ? null
+              : Border(
+                  bottom: BorderSide(
+                      color: AppColors.primaryShadow, width: 4),
+                ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

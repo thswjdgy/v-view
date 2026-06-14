@@ -17,12 +17,11 @@ class _QuestionListScreenState extends ConsumerState<QuestionListScreen> {
   @override
   void initState() {
     super.initState();
+    // reset() 동기 호출 — 첫 build 전에 이전 질문 제거
+    ref.read(interviewProvider.notifier).reset();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final iv = ref.read(interviewProvider);
-      if (iv.questions.isEmpty) {
-        final input = ref.read(sessionInputProvider);
-        ref.read(interviewProvider.notifier).start(input);
-      }
+      final input = ref.read(sessionInputProvider);
+      ref.read(interviewProvider.notifier).start(input);
     });
   }
 
@@ -86,7 +85,8 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (iv.phase == InterviewPhase.loadingQuestions) {
+    if (iv.phase == InterviewPhase.loadingQuestions ||
+        (iv.phase == InterviewPhase.idle && iv.questions.isEmpty)) {
       return const _LoadingView();
     }
     if (iv.errorMessage != null) {
@@ -517,12 +517,14 @@ class _DuoButtonState extends State<_DuoButton> {
           color: bg,
           borderRadius: BorderRadius.circular(16),
           border: widget.enabled
-              ? Border(
-                  bottom: BorderSide(
-                    color: AppColors.primaryShadow,
-                    width: _pressed ? 0 : 4,
-                  ),
-                )
+              ? (_pressed
+                  ? null
+                  : Border(
+                      bottom: BorderSide(
+                        color: AppColors.primaryShadow,
+                        width: 4,
+                      ),
+                    ))
               : Border.all(color: AppColors.outlineVariant, width: 1),
         ),
         child: Row(

@@ -726,10 +726,12 @@ class _PrimaryGlassButtonState extends State<_PrimaryGlassButton> {
         decoration: BoxDecoration(
           color: AppColors.primaryContainer,
           borderRadius: BorderRadius.circular(14),
-          border: Border(
-            bottom: BorderSide(
-                color: AppColors.primaryShadow, width: _pressed ? 0 : 3),
-          ),
+          border: _pressed
+              ? null
+              : Border(
+                  bottom: BorderSide(
+                      color: AppColors.primaryShadow, width: 3),
+                ),
         ),
         child: widget.loading
             ? const SizedBox(

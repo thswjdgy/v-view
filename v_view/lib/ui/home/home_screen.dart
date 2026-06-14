@@ -6,7 +6,9 @@ import '../../domain/history/session_history.dart';
 import '../../domain/session_setup/session_input.dart';
 import '../../state/auth/auth_provider.dart'
     show authStateProvider, authNotifierProvider;
+import '../../state/gaze/gaze_provider.dart';
 import '../../state/history/history_provider.dart';
+import '../../state/interview/interview_provider.dart';
 import '../../state/report/report_provider.dart';
 import '../../theme/app_theme.dart';
 import '../history/history_detail_screen.dart';
@@ -23,15 +25,21 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _navIndex = 0;
 
+  void _startNewSession() {
+    ref.read(interviewProvider.notifier).reset();
+    ref.read(gazeProvider.notifier).reset();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SessionSetupScreen()),
+    );
+  }
+
   void _onNavTap(int index) {
     if (index == 0) {
       setState(() => _navIndex = 0);
     } else if (index == 1) {
       // 연습
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const SessionSetupScreen()),
-      );
+      _startNewSession();
     } else if (index == 2) {
       // 기록
       Navigator.push(
@@ -142,11 +150,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   Expanded(
                     flex: 7,
                     child: _CtaCard(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const SessionSetupScreen()),
-                      ),
+                      onTap: _startNewSession,
                     ),
                   ),
                 ],
@@ -690,11 +694,12 @@ class _SmallDuoButtonState extends State<_SmallDuoButton> {
         decoration: BoxDecoration(
           color: AppColors.primaryContainer,
           borderRadius: BorderRadius.circular(12),
-          border: Border(
-            bottom: BorderSide(
-                color: AppColors.primaryShadow,
-                width: _pressed ? 0 : 3),
-          ),
+          border: _pressed
+              ? null
+              : Border(
+                  bottom: BorderSide(
+                      color: AppColors.primaryShadow, width: 3),
+                ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

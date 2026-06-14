@@ -41,7 +41,8 @@ class ClaudeApiService {
     return _parseQuestions(response.data);
   }
 
-  Future<InterviewQuestion> generateFollowUp({
+  /// 꼬리질문이 필요하면 반환, 불필요하면 null 반환
+  Future<InterviewQuestion?> generateFollowUp({
     required InterviewQuestion question,
     required String userAnswer,
   }) async {
@@ -88,8 +89,21 @@ class ClaudeApiService {
     return '''면접 질문: ${q.text}
 지원자 답변: $answer
 
-위 답변을 바탕으로 꼬리 질문 1개를 JSON으로 반환하세요.
-형식: {"text":"꼬리 질문","intent":"평가 포인트"}''';
+위 답변을 분석하여 꼬리 질문이 필요한지 판단하세요.
+
+꼬리 질문이 필요한 경우 (모두 해당 시):
+- 답변이 모호하거나 두루뭉술한 경우
+- 구체적인 사례나 근거가 없는 경우
+- 질문의 핵심을 회피하거나 벗어난 경우
+- 언급한 내용에 대해 추가 설명이 필요한 경우
+
+꼬리 질문이 불필요한 경우 (하나라도 해당 시):
+- 답변이 구체적이고 완결성이 있는 경우
+- 이미 충분한 근거와 사례를 포함한 경우
+- 단순 확인 질문에 명확히 답한 경우
+
+필요한 경우: {"needsFollowUp":true,"text":"꼬리 질문 내용","intent":"평가 포인트"}
+불필요한 경우: {"needsFollowUp":false}''';
   }
 
   String _buildFeedbackPrompt(List<QuestionAnswer> qaList, GazeMetrics gaze) {
@@ -128,9 +142,10 @@ $qaText
         .toList();
   }
 
-  InterviewQuestion _parseFollowUp(Map<String, dynamic> data, String parentId) {
+  InterviewQuestion? _parseFollowUp(Map<String, dynamic> data, String parentId) {
     final text = _extractContent(data);
     final q = _extractJson(text) as Map<String, dynamic>;
+    if (q['needsFollowUp'] == false) return null;
     return InterviewQuestion(
       id: 'fu_${DateTime.now().millisecondsSinceEpoch}',
       text: q['text'] as String,

@@ -52,7 +52,7 @@ class SessionSetupScreen extends ConsumerWidget {
               initialValue: input.selfIntroduction,
               onChanged: notifier.setSelfIntroduction,
               maxLines: 6,
-              maxLength: 500,
+              maxLength: 1000,
             ),
             const SizedBox(height: 20),
             _SegmentRow(
@@ -272,8 +272,9 @@ class _DuoButtonState extends State<_DuoButton> {
         decoration: BoxDecoration(
           color: bg,
           borderRadius: BorderRadius.circular(16),
-          border: Border(
-              bottom: BorderSide(color: shadow, width: _pressed ? 0 : 4)),
+          border: _pressed
+              ? null
+              : Border(bottom: BorderSide(color: shadow, width: 4)),
         ),
         child: Text(
           widget.label,

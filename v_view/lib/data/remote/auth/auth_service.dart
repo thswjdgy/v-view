@@ -19,16 +19,17 @@ class AuthService {
         password: password,
       );
       final uid = cred.user!.uid;
-      final doc = await _users.doc(uid).get();
-      if (!doc.exists) {
-        return UserModel(
-          uid: uid,
-          email: email.trim(),
-          name: cred.user?.displayName ?? '',
-          createdAt: DateTime.now(),
-        );
-      }
-      return UserModel.fromFirestore(doc);
+      // Firestore 읽기 실패(보안 규칙 등)해도 로그인 성공으로 처리
+      try {
+        final doc = await _users.doc(uid).get();
+        if (doc.exists) return UserModel.fromFirestore(doc);
+      } catch (_) {}
+      return UserModel(
+        uid: uid,
+        email: email.trim(),
+        name: cred.user?.displayName ?? '',
+        createdAt: DateTime.now(),
+      );
     } catch (e) {
       throw Exception(FirebaseService.handleFirebaseError(e));
     }

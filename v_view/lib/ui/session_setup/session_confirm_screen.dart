@@ -225,10 +225,12 @@ class _DuoButtonState extends State<_DuoButton> {
     final fg = widget.filled
         ? AppColors.onPrimaryContainer
         : AppColors.primary;
-    final border = widget.filled
-        ? Border(
-            bottom: BorderSide(
-                color: AppColors.primaryShadow, width: _pressed ? 0 : 4))
+    final BoxBorder? border = widget.filled
+        ? (_pressed
+            ? null
+            : Border(
+                bottom: BorderSide(
+                    color: AppColors.primaryShadow, width: 4)))
         : Border.all(color: AppColors.primaryContainer, width: 2);
 
     return GestureDetector(

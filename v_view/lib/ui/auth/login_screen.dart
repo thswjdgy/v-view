@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../state/auth/auth_provider.dart';
+import '../home/home_screen.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -33,6 +34,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final state = ref.watch(authNotifierProvider);
     final isLoading = state.status == AuthStatus.loading;
 
+    ref.listen(authNotifierProvider, (_, next) {
+      if (next.status == AuthStatus.success) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+          (route) => false,
+        );
+      }
+    });
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -41,12 +51,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(),
-              const Icon(Icons.videocam_rounded, size: 56, color: Colors.indigo),
-              const SizedBox(height: 12),
               const Text(
                 'v-view',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF006B58),
+                ),
               ),
               const Text(
                 'AI 면접 코치',

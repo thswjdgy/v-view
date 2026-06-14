@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../state/auth/auth_provider.dart';
+import '../home/home_screen.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -44,7 +45,10 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
     ref.listen(authNotifierProvider, (_, next) {
       if (next.status == AuthStatus.success) {
-        Navigator.pop(context); // 로그인 화면으로 복귀 (앱이 auth 상태 감지해 자동 전환)
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+          (route) => false,
+        );
       }
     });
 
