@@ -34,6 +34,16 @@ class SessionInputNotifier extends StateNotifier<SessionInput> {
   void setQuestionCount(int v) => update(state.copyWith(questionCount: v));
   void setTimerMinutes(int v) => update(state.copyWith(timerMinutes: v));
 
+  void reset() {
+    state = const SessionInput(
+      type: InterviewType.job,
+      position: '',
+      company: '',
+      selfIntroduction: '',
+    );
+    _ds?.clear();
+  }
+
   bool get isValid =>
       state.position.trim().isNotEmpty &&
       state.company.trim().isNotEmpty &&

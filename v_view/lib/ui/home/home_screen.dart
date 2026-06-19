@@ -10,6 +10,7 @@ import '../../state/gaze/gaze_provider.dart';
 import '../../state/history/history_provider.dart';
 import '../../state/interview/interview_provider.dart';
 import '../../state/report/report_provider.dart';
+import '../../state/session_setup/session_setup_provider.dart';
 import '../../theme/app_theme.dart';
 import '../history/history_detail_screen.dart';
 import '../history/history_list_screen.dart';
@@ -26,6 +27,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _navIndex = 0;
 
   void _startNewSession() {
+    // 새 면접 시작 — 이전 세션 데이터 전부 초기화 (기록(history)은 제외)
+    ref.read(sessionInputProvider.notifier).reset();
     ref.read(interviewProvider.notifier).reset();
     ref.read(gazeProvider.notifier).reset();
     Navigator.push(

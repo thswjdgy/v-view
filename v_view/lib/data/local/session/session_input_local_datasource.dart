@@ -13,6 +13,10 @@ class SessionInputLocalDatasource {
     });
   }
 
+  void clear() {
+    HiveService.sessionInputBox.delete(_key);
+  }
+
   SessionInput? load() {
     final raw = HiveService.sessionInputBox.get(_key);
     if (raw == null) return null;

@@ -73,7 +73,7 @@
 | fallback 개선 포인트 TOP3 | ✅ |
 | 단위 테스트 25개 통과 | ✅ |
 | `flutter analyze` 이슈 0 | ✅ |
-| Claude API 실 연동 테스트 | ⬜ |
+| OpenAI gpt-4o-mini 실 연동 테스트 | ⬜ |
 
 ---
 
@@ -106,6 +106,6 @@
 
 ## 리스크 & 완충 시간
 
-- **Week 13 여유**: Claude API 실 연동 실패 시 fallback으로 커버
+- **Week 13 여유**: OpenAI gpt-4o-mini 실 연동 실패 시 fallback으로 커버
 - **Week 14 여유**: APK 빌드 실패 시 시뮬레이터 데모로 대체
 - **완충**: 각 주 금요일은 미완 작업 마무리용

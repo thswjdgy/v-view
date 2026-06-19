@@ -55,7 +55,7 @@ Claude Code: 코드 생성 · 리팩토링 · 테스트 · 문서화
 
 ```
 lib/
-├── data/remote/ai/claude_api_service.dart   — Claude API 질문/피드백 생성
+├── data/remote/ai/claude_api_service.dart   — OpenAI gpt-4o-mini 질문/피드백 생성
 ├── data/remote/gaze/gaze_analyzer.dart      — ML Kit 시선 분석 로직
 ├── state/ (6개 Provider)                    — Riverpod 상태 관리 전체
 ├── ui/ (10개 화면·위젯)                     — Flutter UI 전체
@@ -80,9 +80,9 @@ lib/
 | `CLAUDE.md` | AI Agent 코딩 원칙 7개 섹션 |
 | `AGENTS.md` | AI Agent 작업 지침 |
 | `docs/ARCHITECTURE.md` | Mermaid 다이어그램 포함 시스템 구조 |
-| `docs/ADR/` | Flutter, Riverpod, Hive, Claude API 선택 근거 |
+| `docs/ADR/` | Flutter, Riverpod, Hive, OpenAI gpt-4o-mini 선택 근거 |
 | `docs/SETUP.md` | 5분 실행 가이드 (OS별) |
-| `LLM-WIKI.md` | Claude Code 바이브 코딩 암묵지 |
+| `WIKI.md` | LLM & Vibe Coding Wiki (바이브 코딩 암묵지) |
 | `AUTHORING.손정협.md` | 개인 AI Agent 부트스트래핑 방법론 |
 
 ---

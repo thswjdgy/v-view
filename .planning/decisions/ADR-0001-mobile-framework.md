@@ -10,7 +10,7 @@
 
 ## 배경 (Context)
 
-v-view는 카메라 기반 시선 분석과 Claude API 질문 생성을 핵심으로 하는 모바일 면접 코칭 앱이다. 7주 안에 Android/iOS 양쪽에서 동작하는 MVP를 완성해야 한다.
+v-view는 카메라 기반 시선 분석과 OpenAI gpt-4o-mini 질문 생성을 핵심으로 하는 모바일 면접 코칭 앱이다. 7주 안에 Android/iOS 양쪽에서 동작하는 MVP를 완성해야 한다.
 
 ---
 

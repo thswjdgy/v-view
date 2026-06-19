@@ -71,7 +71,7 @@
 - [x] `README.md` (프로젝트 전체 개요)
 - [x] `AGENTS.md` (AI Agent 작업 지침)
 - [x] `docs/ARCHITECTURE.md` (시스템 구조)
-- [x] `docs/ADR/` (Flutter, Riverpod, Hive, Claude API 선택 근거 4개)
+- [x] `docs/ADR/` (Flutter, Riverpod, Hive, OpenAI gpt-4o-mini 선택 근거 4개)
 - [x] `docs/SETUP.md` (개발 환경 설정)
 - [x] `docs/DEPLOY.md` (빌드·배포 가이드)
 - [x] `docs/TESTING.md` (테스트 전략)
@@ -173,7 +173,7 @@
 ```
 지금 당장 (Week 4):
   1. 카메라 + GazeAnalyzer 실기기 연결 (기능 2)
-  2. Claude API 실 연동 테스트 (기능 1)
+  2. OpenAI gpt-4o-mini 실 연동 테스트 (기능 1)
   3. 세션 입력 → 면접 → 리포트 E2E 흐름 확인
 
 Week 5:

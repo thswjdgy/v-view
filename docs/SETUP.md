@@ -65,17 +65,17 @@ Copy-Item .env.example .env
 
 `.env.example`의 내용:
 ```
-ANTHROPIC_API_KEY=your_api_key_here
+OPENAI_API_KEY=your_api_key_here
 ```
 
 `.env`를 열고 `your_api_key_here` 부분을 실제 키로 교체한다:
 ```
-ANTHROPIC_API_KEY=sk-ant-api03-...
+OPENAI_API_KEY=sk-proj-...
 ```
 
 ### 4-3. API 키 발급 방법
 
-1. [console.anthropic.com](https://console.anthropic.com/) 접속
+1. [platform.openai.com](https://platform.openai.com/) 접속
 2. 로그인 → **API Keys** 메뉴
 3. **Create Key** → 키 복사
 4. `.env`에 붙여넣기
@@ -213,7 +213,7 @@ flutter run
 ```
 DioException: 401 Unauthorized
 또는
-flutter_dotenv: ANTHROPIC_API_KEY is not set
+flutter_dotenv: OPENAI_API_KEY is not set
 ```
 
 **체크리스트** (순서대로 확인)
@@ -228,9 +228,9 @@ flutter_dotenv: ANTHROPIC_API_KEY is not set
 
 2. `.env` 파일 안에 키가 올바르게 입력됐는지 확인 (앞뒤 공백·따옴표 없어야 함)
    ```
-   ANTHROPIC_API_KEY=sk-ant-api03-...   ← 올바름
-   ANTHROPIC_API_KEY="sk-ant-api03-..." ← 잘못됨 (따옴표 제거)
-   ANTHROPIC_API_KEY= sk-ant-...        ← 잘못됨 (앞 공백 제거)
+   OPENAI_API_KEY=sk-proj-...   ← 올바름
+   OPENAI_API_KEY="sk-proj-..." ← 잘못됨 (따옴표 제거)
+   OPENAI_API_KEY= sk-proj-...       ← 잘못됨 (앞 공백 제거)
    ```
 
 3. `pubspec.yaml`의 `flutter.assets`에 `.env`가 포함됐는지 확인

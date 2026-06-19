@@ -32,7 +32,7 @@
 ```
 MVP 범위:
 ✅ 시선 분석 (ML Kit)
-✅ AI 질문 생성 (Claude API)
+✅ AI 질문 생성 (OpenAI gpt-4o-mini)
 ✅ 세션 피드백 리포트
 ✅ 로컬 히스토리 (Hive)
 ✅ 타이머/연속 질문
@@ -93,7 +93,7 @@ MVP 범위:
 Framework  : Flutter (Android / iOS)
 State      : Riverpod
 Vision     : ML Kit face detection
-AI         : Claude API (Anthropic)
+AI         : OpenAI API (gpt-4o-mini)
 Local DB   : Hive
 Network    : dio
 Env        : flutter_dotenv
@@ -108,7 +108,7 @@ lib/
 ├── domain/      # Use cases
 └── data/
     ├── local/   # Hive
-    └── remote/  # Claude API, ML Kit
+    └── remote/  # OpenAI API, ML Kit
 ```
 
 ### 핵심 규칙
@@ -150,7 +150,7 @@ chore: 빌드/설정 변경
 
 예시:
 ```
-feat: Claude API 기반 AI 질문 생성 구현 (기능명세서 1.1)
+feat: OpenAI gpt-4o-mini 기반 AI 질문 생성 구현 (기능명세서 1.1)
 fix: 시선 분산 횟수 1초 미만 흔들림 제외 처리
 test: 응시율 계산 로직 유닛 테스트 추가
 ```

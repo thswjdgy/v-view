@@ -143,7 +143,7 @@ v-view 필수 ADR 목록:
 - ADR-001: 크로스플랫폼 프레임워크 선택 (Flutter)
 - ADR-002: 상태 관리 선택 (Riverpod)
 - ADR-003: 로컬 저장소 선택 (Hive)
-- ADR-004: AI 백엔드 선택 (Claude API)
+- ADR-004: AI 백엔드 선택 (OpenAI gpt-4o-mini)
 
 ---
 

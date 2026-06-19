@@ -80,7 +80,7 @@ test('필수 입력 누락 시 isValid = false', () {
 ```dart
 // test/state/report/report_provider_test.dart
 
-test('Claude API 실패 시 시선 지표만으로 리포트가 생성된다', () async {
+test('OpenAI gpt-4o-mini 실패 시 시선 지표만으로 리포트가 생성된다', () async {
   final mockApi = MockClaudeApiService();
   when(mockApi.generateFeedback(any, any))
       .thenThrow(DioException(...));
@@ -112,7 +112,7 @@ genhtml coverage/lcov.info -o coverage/html
 ## 테스트 작성 원칙
 
 1. **비즈니스 규칙 우선**: 시선 분산 1초 기준, 응시율 공식은 반드시 테스트
-2. **외부 의존성 모킹**: Claude API, ML Kit은 Mock 객체 사용
+2. **외부 의존성 모킹**: OpenAI gpt-4o-mini, ML Kit은 Mock 객체 사용
 3. **엣지 케이스 포함**: 빈 프레임, 얼굴 미검출, API 실패
 4. **Riverpod ProviderContainer 활용**: State 테스트는 실제 Provider 사용
 

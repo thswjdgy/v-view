@@ -17,7 +17,7 @@
 
 | 기능 | Presentation | Application | Domain | Data |
 |---|---|---|---|---|
-| AI 질문 생성 | `InterviewScreen`이 질문 카드 표시, 답변 제출 시 꼬리질문 자동 노출 | `InterviewNotifier`가 질문 요청 → 답변 저장 → 꼬리질문 자동 트리거 | `InterviewQuestion` 엔티티 (질문·답변 한 쌍) | `ClaudeApiService`가 Dio로 Claude API HTTP 호출 |
+| AI 질문 생성 | `InterviewScreen`이 질문 카드 표시, 답변 제출 시 꼬리질문 자동 노출 | `InterviewNotifier`가 질문 요청 → 답변 저장 → 꼬리질문 자동 트리거 | `InterviewQuestion` 엔티티 (질문·답변 한 쌍) | `ClaudeApiService`가 Dio로 OpenAI gpt-4o-mini HTTP 호출 |
 | 시선 분석 | `InterviewScreen`이 카메라 뱃지(응시율 %) 표시 | `GazeNotifier`가 프레임 수집 + 1000ms 연속 임계값으로 분산 횟수 계산 | `GazeMetrics` 엔티티 (응시율·분산횟수·최대분산시간) | `GazeAnalyzer`(ML Kit FaceDetector), `CameraFrameConverter`(CameraImage→InputImage 변환) |
 | 피드백 리포트 | `ReportScreen`이 파이차트 → 개선포인트 TOP3 → Q&A 순서로 렌더링 | `ReportNotifier`가 AI 피드백 요청, 실패 시 시선 지표만으로 fallback | `SessionReport`·`ImprovementPoint` 엔티티 | `ClaudeApiService`(AI 피드백), `ReportLocalDatasource`+`HistoryLocalDatasource`(Hive 저장) |
 
@@ -90,7 +90,7 @@ lib/
     │       └── history_local_datasource.dart       # 히스토리 목록 저장·삭제
     └── remote/                        # 외부 서비스 연동
         ├── ai/
-        │   └── claude_api_service.dart # Dio로 Claude API 호출 (질문·꼬리질문·피드백)
+        │   └── claude_api_service.dart # Dio로 OpenAI gpt-4o-mini 호출 (질문·꼬리질문·피드백)
         └── gaze/
             ├── gaze_analyzer.dart     # ML Kit FaceDetector로 시선 판정
             └── camera_frame_converter.dart # CameraImage → ML Kit InputImage 변환
@@ -132,7 +132,7 @@ graph TB
     subgraph DA["Data (lib/data/)"]
         direction LR
         DA1[HiveService<br/>로컬 DB]
-        DA2[ClaudeApiService<br/>Claude API]
+        DA2[ClaudeApiService<br/>OpenAI gpt-4o-mini]
         DA3[GazeAnalyzer<br/>ML Kit]
     end
 
@@ -193,8 +193,8 @@ graph TB
 
 | 상황 | 처리 |
 |---|---|
-| Claude API 질문 생성 실패 | 에러 메시지 + 재시도 버튼 (`ErrorDisplay`) |
-| Claude API 피드백 생성 실패 | 시선 지표만으로 최소 리포트 자동 대체 (`_fallbackImprovements`) |
+| OpenAI gpt-4o-mini 질문 생성 실패 | 에러 메시지 + 재시도 버튼 (`ErrorDisplay`) |
+| OpenAI gpt-4o-mini 피드백 생성 실패 | 시선 지표만으로 최소 리포트 자동 대체 (`_fallbackImprovements`) |
 | 카메라 권한 거부 | `CameraPermissionScreen`으로 안내, 영구거부 시 설정 이동 |
 | 앱 백그라운드 전환 | 타이머 일시정지 (`WidgetsBindingObserver`) |
 | 네트워크 타임아웃 | Dio 30초 타임아웃, 한국어 오류 메시지 (`_NetworkErrorInterceptor`) |
