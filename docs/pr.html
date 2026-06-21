@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>v-view · 시선까지 잡아주는 AI 면접 코치</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet" />
+<style>
+  :root{
+    --mint:#2ec4a0;
+    --mint-deep:#159a7d;
+    --green-dark:#0f6b52;
+    --ink:#1b2b27;
+    --ink-soft:#5e716b;
+    --ink-faint:#94a6a0;
+    --line:#e4eeea;
+    --line-soft:#eef5f2;
+    --bg:#ffffff;
+    --panel:#f4faf7;
+    --panel-2:#eef7f3;
+    --shadow:0 18px 50px -20px rgba(15,107,82,.28);
+    --font:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:var(--font);
+    background:#0b1714;
+    color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  /* ---- Stage / scaling ---- */
+  #viewport{position:fixed;inset:0;display:grid;place-items:center;}
+  #stage{
+    width:1280px;height:720px;position:relative;
+    transform-origin:center center;
+    background:var(--bg);
+    overflow:hidden;
+  }
+
+  .slide{
+    position:absolute;inset:0;
+    padding:64px 76px;
+    background:var(--bg);
+    opacity:0;visibility:hidden;
+    transition:opacity .45s ease;
+    display:flex;flex-direction:column;
+  }
+  .slide.active{opacity:1;visibility:visible;}
+  .slide.active .anim{animation:rise .6s cubic-bezier(.2,.7,.25,1) both;}
+  .slide.active .anim:nth-child(2){animation-delay:.06s;}
+  .slide.active .anim:nth-child(3){animation-delay:.12s;}
+  .slide.active .anim:nth-child(4){animation-delay:.18s;}
+  @keyframes rise{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ---- Shared type ---- */
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:14px;font-weight:700;letter-spacing:.12em;
+    color:var(--mint-deep);text-transform:uppercase;
+  }
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--mint);border-radius:2px;}
+  h1.title{font-size:52px;line-height:1.12;font-weight:800;letter-spacing:-.02em;color:var(--ink);}
+  h2.title{font-size:40px;line-height:1.15;font-weight:800;letter-spacing:-.02em;color:var(--ink);}
+  .title .hl{color:var(--mint-deep);}
+  .lead{font-size:20px;line-height:1.6;color:var(--ink-soft);font-weight:500;}
+  .kicker{font-size:17px;font-weight:700;color:var(--mint-deep);letter-spacing:.01em;}
+
+  .slide-head{margin-bottom:34px;}
+  .slide-head .eyebrow{margin-bottom:14px;}
+  .qa-tag{
+    position:absolute;top:40px;right:76px;
+    font-size:12.5px;font-weight:800;letter-spacing:.14em;
+    color:var(--mint-deep);background:var(--panel-2);
+    padding:7px 14px;border-radius:999px;text-transform:uppercase;
+  }
+
+  /* ---- Cards ---- */
+  .grid{display:grid;gap:18px;}
+  .card{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:18px;padding:24px 26px;
+  }
+  .card.line{
+    background:#fff;border-left:4px solid var(--mint);
+    border-radius:12px;box-shadow:0 6px 22px -16px rgba(15,107,82,.25);
+  }
+  .card .ct{font-size:19px;font-weight:800;color:var(--ink);margin-bottom:8px;}
+  .card .cb{font-size:15.5px;line-height:1.55;color:var(--ink-soft);}
+  .card .cb b{color:var(--ink);font-weight:700;}
+
+  .num-card .idx{
+    font-size:13px;font-weight:800;color:var(--mint-deep);
+    letter-spacing:.05em;margin-bottom:10px;
+    border-bottom:2px solid var(--line);padding-bottom:10px;
+  }
+
+  .pill{
+    display:inline-flex;align-items:center;
+    font-size:14px;font-weight:700;color:var(--mint-deep);
+    background:var(--panel-2);border:1px solid var(--line);
+    padding:9px 16px;border-radius:10px;
+  }
+  .pill.solid{background:var(--mint);color:#fff;border-color:var(--mint);}
+
+  ul.bullets{list-style:none;display:flex;flex-direction:column;gap:13px;}
+  ul.bullets li{position:relative;padding-left:26px;font-size:16.5px;line-height:1.5;color:var(--ink-soft);}
+  ul.bullets li::before{content:"";position:absolute;left:4px;top:9px;width:9px;height:9px;border-radius:3px;background:var(--mint);}
+  ul.bullets li b{color:var(--ink);font-weight:700;}
+
+  .footnote{
+    margin-top:auto;padding-top:20px;
+    font-size:14px;color:var(--ink-faint);font-weight:500;
+    border-top:1px solid var(--line-soft);
+  }
+
+  /* ---- Phone mock (cover) ---- */
+  .phone{
+    width:268px;height:540px;border-radius:42px;
+    background:linear-gradient(160deg,#2a3a36,#11211d);
+    padding:13px;box-shadow:var(--shadow);position:relative;
+  }
+  .phone .screen{
+    width:100%;height:100%;border-radius:30px;overflow:hidden;
+    background:linear-gradient(170deg,#e9f6f1,#ffffff 55%);
+    display:flex;flex-direction:column;align-items:center;padding:28px 20px;
+  }
+  .phone .bar{height:6px;width:84px;background:var(--mint);border-radius:6px;margin:6px 0 22px;}
+  .phone .ph-t{font-size:26px;font-weight:800;color:var(--ink);text-align:center;line-height:1.1;}
+  .phone .avatar{width:78px;height:78px;border-radius:50%;background:linear-gradient(160deg,var(--mint),var(--mint-deep));margin:18px 0 22px;display:grid;place-items:center;color:#fff;font-size:30px;}
+  .phone .opt{width:100%;padding:13px;border-radius:14px;border:1.5px solid var(--line);text-align:center;font-weight:700;color:var(--ink-soft);margin-bottom:11px;font-size:15px;}
+  .phone .opt.go{background:var(--mint);color:#fff;border-color:var(--mint);}
+
+  /* ---- Chart: WBS bars ---- */
+  .barwrap{display:flex;flex-direction:column;gap:11px;}
+  .barrow{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:16px;}
+  .barrow .lbl{font-size:13.5px;font-weight:700;color:var(--ink-soft);text-align:right;}
+  .bartrack{height:30px;border-radius:8px;background:var(--panel-2);position:relative;overflow:hidden;}
+  .barfill{height:100%;border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding-right:14px;color:#fff;font-weight:800;font-size:13px;transform-origin:left;}
+  .slide.active .barfill{animation:grow .8s cubic-bezier(.2,.7,.25,1) both;}
+  @keyframes grow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+
+  /* ---- Timeline ---- */
+  .timeline{display:flex;align-items:flex-start;gap:0;margin-top:8px;}
+  .tnode{flex:1;position:relative;text-align:center;padding-top:30px;}
+  .tline{position:absolute;top:9px;left:0;right:0;height:3px;background:var(--line);}
+  .tnode:first-child .tline{left:50%;}
+  .tnode:last-child .tline{right:50%;}
+  .tdot{position:absolute;top:3px;left:50%;transform:translateX(-50%);width:15px;height:15px;border-radius:50%;background:var(--mint);border:3px solid #fff;box-shadow:0 0 0 2px var(--mint);}
+  .tnode .tw{font-size:13px;font-weight:800;color:var(--mint-deep);}
+  .tnode .td{font-size:12px;color:var(--ink-faint);margin:2px 0 4px;}
+  .tnode .tt{font-size:13px;font-weight:600;color:var(--ink-soft);line-height:1.3;}
+
+  /* ---- Big stats ---- */
+  .stats{display:flex;gap:54px;}
+  .stat .v{font-size:58px;font-weight:800;color:var(--ink);line-height:1;letter-spacing:-.02em;}
+  .stat .v .u{color:var(--mint-deep);}
+  .stat .k{font-size:15px;color:var(--ink-soft);font-weight:600;margin-top:8px;}
+
+  /* ---- Table ---- */
+  table.adr{width:100%;border-collapse:collapse;font-size:15.5px;}
+  table.adr th{text-align:left;font-weight:800;color:var(--mint-deep);padding:12px 14px;border-bottom:2px solid var(--line);font-size:13.5px;letter-spacing:.04em;}
+  table.adr td{padding:13px 14px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft);}
+  table.adr td.dec{font-weight:800;color:var(--ink);}
+  table.adr td.code{font-weight:800;color:var(--mint-deep);font-feature-settings:"tnum";}
+
+  /* ---- Code block ---- */
+  pre.code{
+    background:#0e201b;color:#cdeee2;border-radius:14px;
+    padding:22px 24px;font-size:14px;line-height:1.7;
+    font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+    overflow:auto;
+  }
+  pre.code .c{color:#6fae9c;}
+  pre.code .g{color:#5fe0b6;}
+
+  /* ---- Step flow ---- */
+  .steps{display:flex;align-items:stretch;gap:14px;}
+  .step{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 18px;position:relative;}
+  .step .sn{width:30px;height:30px;border-radius:50%;background:var(--mint);color:#fff;font-weight:800;font-size:15px;display:grid;place-items:center;margin-bottom:13px;}
+  .step .st{font-size:15.5px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+  .step .sd{font-size:13.5px;line-height:1.5;color:var(--ink-soft);}
+  .arrowflow{display:flex;align-items:center;gap:0;}
+  .arrowflow .step{border-radius:16px;}
+  .arrowflow .arr{color:var(--mint);font-size:22px;font-weight:800;padding:0 4px;}
+
+  /* ---- Closing ---- */
+  .closing{background:linear-gradient(155deg,#0f6b52,#159a7d 55%,#2ec4a0);align-items:center;justify-content:center;text-align:center;}
+  .closing h1{color:#fff;font-size:64px;font-weight:800;letter-spacing:-.02em;}
+  .closing p{color:rgba(255,255,255,.86);font-size:20px;font-weight:500;margin-top:18px;}
+  .closing .lk{color:#fff;font-weight:700;margin-top:8px;font-size:17px;}
+
+  .cover{background:radial-gradient(120% 140% at 80% 10%,#eafaf4 0%,#ffffff 55%);}
+
+  /* ---- Nav UI ---- */
+  #ui{position:fixed;inset:0;pointer-events:none;z-index:50;}
+  #progress{position:fixed;top:0;left:0;height:4px;background:var(--mint);transition:width .35s ease;z-index:60;box-shadow:0 0 12px rgba(46,196,160,.6);}
+  .navbtn{
+    position:fixed;top:50%;transform:translateY(-50%);
+    width:46px;height:46px;border-radius:50%;
+    background:rgba(255,255,255,.9);border:1px solid var(--line);
+    color:var(--ink);font-size:20px;cursor:pointer;pointer-events:auto;
+    display:grid;place-items:center;box-shadow:0 8px 24px -10px rgba(0,0,0,.3);
+    transition:transform .15s ease,background .15s ease;
+  }
+  .navbtn:hover{transform:translateY(-50%) scale(1.08);background:#fff;}
+  #prev{left:22px;}#next{right:22px;}
+  #counter{
+    position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+    background:rgba(13,30,25,.82);color:#fff;font-size:13px;font-weight:600;
+    padding:8px 16px;border-radius:999px;pointer-events:auto;cursor:default;
+    letter-spacing:.03em;backdrop-filter:blur(6px);
+  }
+  #counter b{color:var(--mint);}
+  #hint{
+    position:fixed;bottom:20px;right:24px;color:rgba(255,255,255,.5);
+    font-size:12px;pointer-events:none;
+  }
+  @media (max-width:600px){#prev,#next{width:38px;height:38px;font-size:16px;}#hint{display:none;}}
+  @media (prefers-reduced-motion:reduce){
+    .slide,.barfill,*{animation:none !important;transition:opacity .15s linear !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="viewport"><div id="stage"></div></div>
+
+<div id="ui">
+  <button class="navbtn" id="prev" aria-label="이전 슬라이드">‹</button>
+  <button class="navbtn" id="next" aria-label="다음 슬라이드">›</button>
+  <div id="counter"><b id="cur">1</b> / <span id="total">25</span></div>
+  <div id="hint">← → 또는 스페이스로 이동</div>
+</div>
+
+<script>
+/* ============ SLIDES ============ */
+const slides = [
+
+/* 1 — Cover */
+`<section class="slide cover" style="flex-direction:row;align-items:center;gap:60px;">
+  <div style="flex:1;">
+    <div class="eyebrow anim" style="margin-bottom:22px;">최종발표 · 2026-06-22</div>
+    <h1 class="title anim" style="font-size:88px;color:var(--mint-deep);letter-spacing:-.03em;">v-view</h1>
+    <p class="lead anim" style="font-size:24px;margin-top:18px;max-width:520px;color:var(--ink);font-weight:600;">시선까지 잡아주는 AI 면접 코치<br>— 혼자서도, 실전처럼</p>
+    <p class="anim" style="margin-top:14px;color:var(--ink-faint);font-size:15px;font-weight:500;">손정협 · github.com/thswjdguq/v-view</p>
+    <div class="anim" style="display:flex;gap:10px;margin-top:28px;flex-wrap:wrap;">
+      <span class="pill solid">FLUTTER</span><span class="pill">RIVERPOD</span>
+      <span class="pill">ML KIT</span><span class="pill">OPENAI GPT-4O-MINI</span>
+    </div>
+  </div>
+  <div class="anim phone">
+    <div class="screen">
+      <div class="bar"></div>
+      <div class="ph-t">Interview<br>Coach</div>
+      <div class="avatar">🧑‍💼</div>
+      <div class="opt">💬 Practice</div>
+      <div class="opt">Questions</div>
+      <div class="opt go">Feedback</div>
+    </div>
+  </div>
+</section>`,
+
+/* 2 — Problem framing */
+`<section class="slide">
+  <div class="slide-head anim">
+    <div class="eyebrow">왜 v-view 인가</div>
+    <h1 class="title">혼자 연습해도, 실제<br>면접관 앞에 있는 것처럼</h1>
+  </div>
+  <p class="lead anim" style="border-left:4px solid var(--mint);padding-left:18px;max-width:760px;margin-bottom:30px;">
+    면접은 사람 앞에서 잘해야 하는데, 연습은 늘 혼자 거울 보고 끝난다.
+  </p>
+  <div class="kicker anim" style="margin-bottom:16px;"><span style="color:var(--ink);">3박자</span> 경험</div>
+  <div class="grid anim" style="grid-template-columns:repeat(3,1fr);">
+    <div class="card num-card"><div class="idx">01</div><div class="cb"><b>AI가 질문을 던진다</b><br>직무·자소서 기반 맞춤 질문</div></div>
+    <div class="card num-card"><div class="idx">02</div><div class="cb"><b>카메라가 시선을 본다</b><br>실시간 응시율 측정</div></div>
+    <div class="card num-card"><div class="idx">03</div><div class="cb"><b>끝나면 리포트를 준다</b><br>개선 TOP3 즉시 제공</div></div>
+  </div>
+</section>`,
+
+/* 3 — 3 limits */
+`<section class="slide">
+  <div class="slide-head anim">
+    <div class="eyebrow">문제 정의</div>
+    <h2 class="title">혼자 면접 준비의 <span class="hl">3가지 한계</span></h2>
+  </div>
+  <div class="grid anim" style="grid-template-columns:repeat(3,1fr);margin-bottom:30px;">
+    <div class="card line"><div class="ct">실전 긴장감 부재</div><div class="cb">혼자서는 실전 같은 긴장감을 만들 수 없다.</div></div>
+    <div class="card line"><div class="ct">객관적 피드백 없음</div><div class="cb">시선이 흔들리는지, 답이 두루뭉술한지 스스로 모른다.</div></div>
+    <div class="card line"><div class="ct">맞춤 질문 부재</div><div class="cb">나에게 딱 맞는 질문을 받기 어렵다.</div></div>
+  </div>
+  <p class="lead anim" style="text-align:center;font-weight:700;color:var(--ink);background:var(--panel);padding:18px;border-radius:14px;">
+    내가 지금 잘하고 있나를 알 수 없는 <span style="color:var(--mint-deep);">막막함</span>
+  </p>
+</section>`,
+
+/* 4 — WBS timeline */
+`<section class="slide">
+  <div class="slide-head anim">
+    <div class="eyebrow">프로젝트 관리</div>
+    <h2 class="title">WBS &amp; 진행 현황</h2>
+  </div>
+  <div class="stats anim" style="margin-bottom:36px;">
+    <div class="stat"><div class="v">9<span class="u">주</span></div><div class="k">W1~W9 계획</div></div>
+    <div class="stat"><div class="v">8<span class="u">/8</span></div><div class="k">온타임 완주</div></div>
+    <div class="stat"><div class="v">6<span class="u">/22</span></div><div class="k">최종발표 예정</div></div>
+  </div>
+  <div class="timeline anim">
+    ${[["W1","4/20","기획·repo"],["W2","4/27","WBS·ADR"],["W3","5/4","아키텍처"],["W4","5/11","빌드·UI"],["W5","5/18","시선분석"],["W6","6/1","중간발표"],["W7","6/8","구현2·테스트"],["W8","6/15","통합점검"],["W9","6/22","최종발표"]].map(t=>`<div class="tnode"><div class="tline"></div><div class="tdot"></div><div class="tw">${t[0]}</div><div class="td">${t[1]}</div><div class="tt">${t[2]}</div></div>`).join("")}
+  </div>
+  <p class="footnote anim">5/25 공휴일 제외 · 전 단계 온타임 완주</p>
+</section>`,
+
+/* 5 — 100% chart */
+`<section class="slide">
+  <div class="slide-head anim" style="text-align:center;margin-bottom:24px;">
+    <h2 class="title" style="font-size:34px;">프로젝트 진행 <span class="hl">100% 완료</span></h2>
+  </div>
+  <div class="stats anim" style="justify-content:center;margin-bottom:26px;gap:80px;">
+    <div class="stat" style="text-align:center;"><div class="v">100<span class="u">%</span></div><div class="k">구현 완료</div></div>
+    <div class="stat" style="text-align:center;"><div class="v">8<span class="u">/8</span></div><div class="k">온타임</div></div>
+    <div class="stat" style="text-align:center;"><div class="v">6<span class="u">/22</span></div><div class="k">최종발표</div></div>
+  </div>
+  <div class="barwrap anim">
+    ${[["W1 기획·repo"],["W2 WBS·ADR·문서"],["W3 아키텍처·환경"],["W4 빌드·UI"],["W5 핵심화면·시선분석"],["W6 중간발표"],["W7 구현2·단위테스트"],["W8 통합점검·문서완비"],["W9 최종발표(오늘)"]].map((b,i)=>{
+      const c=['#0f6b52','#16805f','#1c956d','#23a87c','#2ab98a','#34c79a','#48d0a8','#62d8b5','#80e0c4'][i];
+      return `<div class="barrow"><div class="lbl">${b[0]}</div><div class="bartrack"><div class="barfill" style="width:100%;background:${c};animation-delay:${i*0.05}s">100</div></div></div>`;
+    }).join("")}
+  </div>
+</section>`,
+
+/* 6 — Tech stack & AI chain */
+`<section class="slide">
+  <div class="slide-head anim">
+    <div class="eyebrow">기술 개요</div>
+    <h2 class="title">적용 기술 &amp; AI 도구 체인</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:30px;">
+    <div class="anim">
+      <div class="kicker" style="margin-bottom:14px;">기술 스택</div>
+      <div style="display:flex;flex-wrap:wrap;gap:9px;">
+        <span class="pill">Flutter 3.38.9</span><span class="pill">Riverpod 2.6.1</span>
+        <span class="pill">ML Kit Face Detection</span><span class="pill">OpenAI gpt-4o-mini</span>
+        <span class="pill">Hive</span><span class="pill">Dio</span><span class="pill">flutter_dotenv</span>
+      </div>
+      <p style="margin-top:18px;font-size:14.5px;color:var(--ink-soft);"><b style="color:var(--ink);">GitHub</b> 56 커밋 · week1~8 브랜치로 주차별 기록</p>
+    </div>
+    <div class="anim">
+      <div class="kicker" style="margin-bottom:14px;">AI 도구 체인 4단계</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        ${[["1","기획 / Manifest AI"],["2","디자인 / Google Stitch"],["3","개발 / Claude Code"],["4","검토 / 개발자(손정협)"]].map(s=>`<div style="display:flex;align-items:center;gap:13px;"><span style="width:28px;height:28px;border-radius:8px;background:var(--mint);color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px;">${s[0]}</span><span style="font-size:16px;font-weight:600;color:var(--ink);">${s[1]}</span></div>`).join("")}
+      </div>
+    </div>
+  </div>
+  <p class="footnote anim">전 산출물을 사람이 직접 검수·의사결정 (Human-in-the-Loop)</p>
+</section>`,
+
+/* 7 — Implementation method */
+`<section class="slide">
+  <div class="slide-head anim">
+    <div class="eyebrow">구현 방법</div>
+    <h2 class="title">대화형 개발 + 검증 루프</h2>
+  </div>
+  <div class="grid anim" style="grid-template-columns:1fr 1fr;">
+    <div class="card"><div class="ct">AI 주입 통제</div><div class="cb">CLAUDE.md · AGENTS.md로 프로젝트 규칙·레이어를 AI에 주입. <b>외과적 수정</b>으로 요청 범위만 정확히 변경.</div></div>
+    <div class="card"><div class="ct">AI 질문 생성</div><div class="cb">직무·회사·자소서 → gpt-4o-mini가 <b>3/5/7개 + 꼬리질문</b> 생성.</div></div>
+    <div class="card"><div class="ct">시선 분석 &amp; 리포트</div><div class="cb">ML Kit FaceDetector로 프레임별 응시 판정. 리포트는 시선 지표 + 피드백 TOP3.</div></div>
+    <div class="card"><div class="ct">커밋 게이트</div><div class="cb"><b>flutter analyze + flutter test</b> 통과 후에만 커밋.</div></div>
+  </div>
+</section>`,
+
+/* 8 — Clean architecture */
+`<section class="slide">
+  <div class="slide-head anim">
+    <div class="eyebrow">아키텍처</div>
+    <h2 class="title">4계층 클린 아키텍처 · 단방향 의존</h2>
+  </div>
+  <div class="anim" style="display:flex;flex-direction:column;gap:12px;">
+    ${[["UI (lib/ui)","화면·위젯, 상태만 참조","#0f6b52"],["State (lib/state)","Riverpod: GazeNotifier · InterviewNotifier · ReportNotifier","#1c956d"],["Domain (lib/domain)","순수 Dart 엔티티, 외부 import 없음","#2ab98a"],["Data (lib/data)","local(Hive) · remote(OpenAI · ML Kit · Firebase)","#48d0a8"]].map((l,i)=>`<div style="display:flex;align-items:center;gap:18px;background:var(--panel);border-radius:14px;padding:16px 22px;border-left:5px solid ${l[2]};"><div style="font-size:18px;font-weight:800;color:var(--ink);min-width:200px;">${l[0]}</div><div style="font-size:15px;color:var(--ink-soft);">${l[1]}</div></div>`).join("")}
+  </div>
+  <p class="footnote anim">의존 방향: ui → state → domain ← data · <b style="color:var(--mint-deep);">원본 영상은 저장하지 않음</b></p>
+</section>`,
+
+/* 9 — Bug story */
+`<section class="slide">
+  <div class="slide-head anim">
+    <div class="eyebrow">트러블슈팅</div>
+    <h2 class="title">응시율이 항상 <span class="hl">0%</span>였던 이유</h2>
+  </div>
+  <div class="arrowflow anim">
+    <div class="step"><div class="sn">1</div><div class="st">문제</div><div class="sd">앱은 정상 실행되는데 응시율이 항상 0%. 에러 로그 없이 시선 분석만 조용히 실패.</div></div>
+    <span class="arr">→</span>
+    <div class="step"><div class="sn">2</div><div class="st">원인</div><div class="sd">ML Kit은 NV21만 받는데 카메라가 YUV_420_888로 프레임 전달.</div></div>
+    <span class="arr">→</span>
+    <div class="step"><div class="sn">3</div><div class="st">해결</div><div class="sd">camera_frame_converter.dart에서 row stride·pixel stride까지 처리해 NV21로 변환.</div></div>
+    <span class="arr">→</span>
+    <div class="step"><div class="sn">4</div><div class="st">검증</div><div class="sd">포맷 정합 후 FaceDetector가 시선을 정상 인식하도록 복구.</div></div>
+  </div>
+  <p class="footnote anim">증상 → 원인 → 해결 → 교훈 포맷으로 <b>WIKI.md</b>에 누적</p>
+</section>`,
+
+/* 10 — Tests */
+`<section class="slide">
+  <div class="slide-head anim">
+    <div class="eyebrow">테스트</div>
+    <h2 class="title">단위 <span class="hl">45개</span> 전체 통과</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;">
+    <div class="anim">
+      <table class="adr">
+        <tr><th>테스트 파일</th><th style="text-align:right;">개수</th></tr>
+        ${[["gaze_analyzer_test","10"],["interview_notifier_test","20"],["report_notifier_test","7"],["session_input_notifier_test","7"],["widget_test","1"]].map(r=>`<tr><td>${r[0]}</td><td class="code" style="text-align:right;">${r[1]}</td></tr>`).join("")}
+        <tr><td class="dec">합계</td><td class="code" style="text-align:right;font-size:17px;">45</td></tr>
+      </table>
+    </div>
+    <div class="anim">
+      <div class="kicker" style="margin-bottom:14px;">핵심 검증 항목</div>
+      <ul class="bullets">
+        <li>시선 분산 <b>연속 1초</b> 기준</li>
+        <li>응시율 공식</li>
+        <li>상태 전환</li>
+        <li>AI 실패 <b>fallback</b></li>
+      </ul>
+      <p style="margin-top:16px;font-size:14px;color:var(--ink-soft);"><b style="color:var(--ink);">flutter test</b>로 실행</p>
+    </div>
+  </div>
+  <p class="footnote anim">통합 테스트는 에뮬레이터 카메라 한계로 미실시, 실기기 자동화는 다음 단계</p>
+</section>`,
+
+/* 11 — Bootstrap method */
+`<section class="slide">
+  <div class="slide-head anim">
+    <div class="eyebrow">방법론</div>
+    <h2 class="title">단일 부트스트랩 — <span class="hl">AUTHORING.손정협.md</span></h2>
+  </div>
+  <div class="grid anim" style="grid-template-columns:1fr 1fr;margin-bottom:26px;">
+    <div class="card"><div class="ct">단일 명세 파일</div><div class="cb">AUTHORING.손정협.md 하나로 AGENTS.md · CLAUDE.md · ARCHITECTURE · ADR · SETUP·DEPLOY·TESTING 문서 전체를 재생성.</div></div>
+    <div class="card"><div class="ct">세션 루틴 &amp; 자기 점검</div><div class="cb">세션 시작 루틴 + 커밋 전 자기 점검 체크리스트로, AI가 만든 코드를 본인이 설명 가능하게 보장.</div></div>
+  </div>
+  <p class="lead anim" style="text-align:center;font-weight:800;color:var(--ink);background:var(--panel-2);padding:20px;border-radius:14px;">
+    핵심 원칙 — <span style="color:var(--mint-deep);">구현은 AI가, 판단과 설명은 내가</span>
+  </p>
+</section>`,
+
+/* 12 — Usage & impact */
+`<section class="slide">
+  <div class="slide-head anim">
+    <div class="eyebrow">활용 방안</div>
+    <h2 class="title">활용 방안 &amp; <span class="hl">기대 효과</span></h2>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:34px;">
+    <div class="anim">
+      <div class="kicker" style="margin-bottom:14px;">주요 타깃</div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="card line" style="padding:16px 20px;"><div class="ct" style="font-size:17px;">취업·이직 준비생</div><div class="cb">혼자서도 실전 같은 면접 반복 훈련</div></div>
+        <div class="card line" style="padding:16px 20px;"><div class="ct" style="font-size:17px;">입시 면접 학생</div><div class="cb">AI 맞춤 질문 + 시선 피드백으로 자신감 향상</div></div>
+        <div class="card line" style="padding:16px 20px;"><div class="ct" style="font-size:17px;">기업 HR 교육 (v3)</div><div class="cb">대규모 면접 훈련 도구로 확장</div></div>
+      </div>
+    </div>
+    <div class="anim">
+      <div class="kicker" style="margin-bottom:14px;">기대 효과</div>
+      <ul class="bullets">
+        <li>시선 처리 습관 <b>수치화 → 반복 개선</b></li>
+        <li>언제 어디서나 스마트폰 하나로 실전 훈련</li>
+        <li><b>AI 꼬리질문</b>으로 답변 깊이 향상</li>
+        <li>세션별 리포트로 성장 추이 확인</li>
+      </ul>
+    </div>
+  </div>
+</section>`,
+
+/* 13 — ADR */
+`<section class="slide">
+  <div class="qa-tag">Q&amp;A 대비</div>
+  <div class="slide-head anim">
+    <div class="eyebrow">기술 결정</div>
+    <h2 class="title">ADR 요약 — 주요 기술 결정 <span class="hl">5건</span></h2>
+  </div>
+  <div class="anim">
+    <table class="adr">
+      <tr><th style="width:90px;">ADR</th><th>선택</th><th>기각 대안</th></tr>
+      ${[["001","Flutter","React Native · 네이티브 분리"],["002","Riverpod","Provider · BLoC · GetX"],["003","Hive","SQLite · shared_preferences · Isar"],["004","OpenAI gpt-4o-mini","Gemini · 온디바이스 LLM"],["005","ML Kit","MediaPipe · 자체 TFLite"]].map(r=>`<tr><td class="code">${r[0]}</td><td class="dec">${r[1]}</td><td>${r[2]}</td></tr>`).join("")}
+    </table>
+  </div>
+  <p class="footnote anim">각 ADR: Context · Decision · Status · Consequence + 기각 이유 (docs/ADR/)</p>
+</section>`,
+
+/* 14 — Directory */
+`<section class="slide">
+  <div class="qa-tag">Q&amp;A 대비</div>
+  <div class="slide-head anim"><div class="eyebrow">코드 구조</div><h2 class="title">디렉토리 구조</h2></div>
+  <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:30px;">
+    <pre class="code anim">lib/
+├── <span class="g">ui/</span>          <span class="c"># 화면 (Presentation)</span>
+├── <span class="g">state/</span>       <span class="c"># Riverpod Notifiers</span>
+├── <span class="g">domain/</span>      <span class="c"># 순수 Dart 엔티티</span>
+├── <span class="g">data/</span>
+│   ├── remote/  <span class="c"># OpenAI · ML Kit</span>
+│   └── local/   <span class="c"># Hive</span>
+├── services/
+├── widgets/
+└── theme/</pre>
+    <div class="anim">
+      <div class="kicker" style="margin-bottom:12px;">레이어 1:1 매핑</div>
+      <ul class="bullets">
+        <li><b>ui/</b> — 화면만, 데이터 직접 호출 없음</li>
+        <li><b>state/</b> — GazeNotifier · InterviewNotifier · ReportNotifier</li>
+        <li><b>domain/</b> — 순수 Dart, 외부 import 없음</li>
+        <li><b>data/</b> — remote(OpenAI·ML Kit) + local(Hive)</li>
+      </ul>
+      <p style="margin-top:14px;font-size:14px;color:var(--mint-deep);font-weight:700;">단방향 의존: 화면 → 상태 → 도메인 → 데이터</p>
+    </div>
+  </div>
+</section>`,
+
+/* 15 — Setup */
+`<section class="slide">
+  <div class="qa-tag">Q&amp;A 대비</div>
+  <div class="slide-head anim"><div class="eyebrow">개발 환경</div><h2 class="title">5분 셋업</h2></div>
+  <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:30px;">
+    <div class="anim">
+      <div class="kicker" style="margin-bottom:12px;">요구 환경</div>
+      <ul class="bullets">
+        <li>Flutter 3.38.9</li><li>JDK 17</li>
+        <li>Android SDK <b>(compileSdk 36 / minSdk 24)</b></li>
+        <li>.env <b>(OPENAI_API_KEY)</b></li>
+      </ul>
+    </div>
+    <div class="anim">
+      <div class="kicker" style="margin-bottom:12px;">실행 순서</div>
+      <pre class="code">git clone https://github.com/thswjdguq/v-view
+flutter pub get
+<span class="c"># .env에 OPENAI_API_KEY 입력</span>
+flutter run</pre>
+    </div>
+  </div>
+  <p class="footnote anim">API 키 하드코딩 금지 · flutter doctor로 점검 · 시선 분석은 실기기 권장 · docs/SETUP.md 제공</p>
+</section>`,
+
+/* 16 — Build vs deploy */
+`<section class="slide">
+  <div class="qa-tag">Q&amp;A 대비</div>
+  <div class="slide-head anim"><div class="eyebrow">배포 파이프라인</div><h2 class="title">빌드 vs 배포</h2></div>
+  <div class="grid anim" style="grid-template-columns:1fr 1fr;">
+    <div class="card"><div class="ct">빌드</div><pre class="code" style="margin:8px 0;font-size:13px;">flutter build apk --release
+flutter build appbundle --release</pre><div class="cb">실행 가능한 산출물로 컴파일. 서명: <b>key.properties + v-view-release.jks</b></div></div>
+    <div class="card"><div class="ct">배포</div><div class="cb"><b>Firebase App Distribution</b>으로 테스터에게 APK 배포. CI Secrets로 .env 주입 (키 미커밋).</div></div>
+  </div>
+  <p class="footnote anim">현재: 빌드·서명 파이프라인 준비 완료, 외부 배포는 예정 단계</p>
+</section>`,
+
+/* 17 — Performance */
+`<section class="slide">
+  <div class="qa-tag">Q&amp;A 대비</div>
+  <div class="slide-head anim"><div class="eyebrow">성능</div><h2 class="title">성능 최적화</h2></div>
+  <div class="grid anim" style="grid-template-columns:1fr 1fr;">
+    <div class="card"><div class="ct">UI Flash 방지</div><div class="cb">질문 화면 진입 시 첫 프레임 전 이전 질문 동기 초기화.</div></div>
+    <div class="card"><div class="ct">무한 루프 차단</div><div class="cb">꼬리질문 생성 깊이 최대 2단계 제한.</div></div>
+    <div class="card"><div class="ct">중복 API 억제</div><div class="cb">상태 흐름 제어로 재진입 시 중복 생성 방지.</div></div>
+    <div class="card"><div class="ct">빌드 효율</div><div class="cb">변경 파일만 타겟 분석, 병렬 도구 호출.</div></div>
+  </div>
+</section>`,
+
+/* 18 — Code quality */
+`<section class="slide">
+  <div class="qa-tag">Q&amp;A 대비</div>
+  <div class="slide-head anim"><div class="eyebrow">품질 관리</div><h2 class="title">코드 품질 관리</h2></div>
+  <div class="grid anim" style="grid-template-columns:1fr 1fr;">
+    <div class="card"><div class="ct">flutter analyze</div><div class="cb">매 수정마다 실행 — <b>에러·경고 0건</b> (info 수준 deprecation만 잔존, STT v2 미사용).</div></div>
+    <div class="card"><div class="ct">외과적 수정</div><div class="cb">변경 줄이 요청에서 직접 추적 가능.</div></div>
+    <div class="card"><div class="ct">레이어 경계 검토</div><div class="cb">AI 생성물의 Domain/Data 위치 오류를 사람이 교정.</div></div>
+    <div class="card"><div class="ct">ADR 문서화</div><div class="cb">기술 결정 근거 5건 기록.</div></div>
+  </div>
+</section>`,
+
+/* 19 — Docs as control */
+`<section class="slide">
+  <div class="qa-tag">Q&amp;A 대비</div>
+  <div class="slide-head anim"><div class="eyebrow">문서화</div><h2 class="title">문서가 곧 <span class="hl">통제 장치</span></h2></div>
+  <div class="grid anim" style="grid-template-columns:repeat(3,1fr);">
+    <div class="card line"><div class="ct">단일 소스 통제</div><div class="cb">CLAUDE.md · AGENTS.md로 행동 원칙·코딩 규칙·MVP 범위를 한 파일에서 관리.</div></div>
+    <div class="card line"><div class="ct">암묵지 관리</div><div class="cb">WIKI.md에 최신 LLM·패키지 지식과 트러블슈팅 누적.</div></div>
+    <div class="card line"><div class="ct">AI 솔직성</div><div class="cb">무엇을 AI가 생성하고 무엇을 본인이 검토·수정했는지 명확히 공개.</div></div>
+  </div>
+</section>`,
+
+/* 20 — Install guide */
+`<section class="slide">
+  <div class="qa-tag">Q&amp;A 대비</div>
+  <div class="slide-head anim"><div class="eyebrow">설치</div><h2 class="title">GitHub 설치 가이드</h2></div>
+  <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:30px;">
+    <div class="anim">
+      <div class="kicker" style="margin-bottom:10px;">설치 순서 · github.com/thswjdguq/v-view</div>
+      <pre class="code">git clone https://github.com/thswjdguq/v-view
+flutter pub get
+<span class="c"># .env 파일에 OPENAI_API_KEY 입력</span>
+flutter run</pre>
+    </div>
+    <div class="anim">
+      <div class="kicker" style="margin-bottom:10px;">문서 인덱스</div>
+      <ul class="bullets">
+        <li>docs/SETUP.md</li><li>docs/DEPLOY.md</li>
+        <li>docs/TESTING.md</li><li>docs/ARCHITECTURE.md</li>
+        <li>docs/ADR/ <b>(5건)</b></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footnote anim">README에 Setup · Build &amp; Deploy · Testing · Architecture · ADR 인덱스 제공</p>
+</section>`,
+
+/* 21 — Demo */
+`<section class="slide">
+  <div class="qa-tag">Q&amp;A 대비</div>
+  <div class="slide-head anim"><div class="eyebrow">시연 데모</div><h2 class="title">앱 형태 &amp; 기능</h2></div>
+  <p class="lead anim" style="font-size:16px;margin-bottom:22px;border-left:4px solid var(--mint);padding-left:16px;">시선 측정은 카메라 실입력이 필요해, 본 데모는 화면 흐름 중심으로 보여줍니다.</p>
+  <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:30px;">
+    <div class="anim">
+      <div class="kicker" style="margin-bottom:12px;">주요 화면 구성</div>
+      <ul class="bullets" style="gap:9px;">
+        <li><b>홈 화면</b> — 세션 시작 진입점</li>
+        <li><b>세션 설정</b> — 직무·회사·자소서 입력</li>
+        <li><b>인터뷰 화면</b> — 카메라 프리뷰 + AI 질문</li>
+        <li><b>시선 추적 오버레이</b> — 실시간 응시율</li>
+        <li><b>리포트 화면</b> — 응시율 + 개선 TOP3</li>
+      </ul>
+    </div>
+    <div class="anim">
+      <div class="kicker" style="margin-bottom:12px;">핵심 기능 요약</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:14px 18px;"><div class="cb"><b>1. AI 질문 생성</b> — gpt-4o-mini, 기본 3개 + 꼬리질문</div></div>
+        <div class="card" style="padding:14px 18px;"><div class="cb"><b>2. 실시간 시선 분석</b> — ML Kit 온디바이스, 연속 1초 이탈 = 분산 1회</div></div>
+        <div class="card" style="padding:14px 18px;"><div class="cb"><b>3. 즉시 리포트</b> — 세션 종료 즉시 개선 TOP3 제공</div></div>
+      </div>
+    </div>
+  </div>
+</section>`,
+
+/* 22 — User scenario */
+`<section class="slide">
+  <div class="qa-tag">Q&amp;A 대비</div>
+  <div class="slide-head anim"><div class="eyebrow">사용자 시나리오</div><h2 class="title">실전 흐름</h2></div>
+  <div class="anim" style="display:flex;flex-direction:column;gap:10px;">
+    ${[["1","세션 설정","직무: 백엔드 개발자 · 회사: 네이버 · 자소서 붙여넣기"],["2","AI 질문 수신","“협업 중 갈등을 해결한 경험을 말해주세요” + 꼬리질문 자동 대기"],["3","답변 & 시선 추적","카메라 응시 유지하며 답변 · 1초 이탈 시 분산 카운트"],["4","꼬리질문","“그 상황에서 본인의 역할은 구체적으로 무엇이었나요?”"],["5","리포트 확인","응시율 · 분산 횟수 · 개선 TOP3 즉시 제공"]].map(s=>`<div style="display:flex;align-items:center;gap:18px;background:var(--panel);border-radius:12px;padding:13px 20px;"><span style="width:30px;height:30px;border-radius:50%;background:var(--mint);color:#fff;font-weight:800;display:grid;place-items:center;flex-shrink:0;">${s[0]}</span><div style="min-width:160px;font-weight:800;color:var(--ink);font-size:15.5px;">${s[1]}</div><div style="font-size:14.5px;color:var(--ink-soft);">${s[2]}</div></div>`).join("")}
+  </div>
+  <p class="footnote anim">직무·자소서 기반 맞춤 질문 → 시선 추적 → 즉각 피드백, 실전과 동일한 사이클</p>
+</section>`,
+
+/* 23 — Impact scenes */
+`<section class="slide">
+  <div class="qa-tag">Q&amp;A 대비</div>
+  <div class="slide-head anim"><div class="eyebrow">임팩트 장면</div><h2 class="title">AI 질문이 <span class="hl">실시간으로</span> 생성된다</h2></div>
+  <div class="grid anim" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+    <div class="card num-card"><div class="idx">장면 1 — AI 질문 생성</div><div class="cb">자소서를 붙여넣는 순간, gpt-4o-mini가 직무 맞춤 질문 3개 + 꼬리질문을 즉시 생성. <b>내 자소서를 읽고 만든 질문.</b></div></div>
+    <div class="card num-card"><div class="idx">장면 2 — 시선 이탈 감지</div><div class="cb">눈을 1초 이상 돌리는 순간 분산 카운터 상승. 조용히 실패하던 버그를 <b>camera_frame_converter.dart</b>로 해결.</div></div>
+    <div class="card num-card"><div class="idx">장면 3 — 즉시 리포트</div><div class="cb">세션 종료 즉시 응시율과 개선 TOP3가 화면에 표시. <b>녹화 돌려볼 필요 없이 수치로 확인.</b></div></div>
+  </div>
+  <p class="lead anim" style="text-align:center;font-weight:800;color:var(--mint-deep);">이 3장면이 v-view의 핵심 가치를 증명한다</p>
+</section>`,
+
+/* 24 — Roadmap */
+`<section class="slide">
+  <div class="slide-head anim"><div class="eyebrow">로드맵</div><h2 class="title">향후 발전 방향</h2></div>
+  <div class="anim">
+    <div class="kicker" style="margin-bottom:16px;">향후 v2</div>
+    <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:30px;">
+      <div class="card line"><div class="cb"><b>통합 테스트</b><br>integration_test 추가</div></div>
+      <div class="card line"><div class="cb"><b>실배포</b><br>Firebase App Distribution</div></div>
+      <div class="card line"><div class="cb"><b>기능 확장</b><br>음성 STT · 표정 분석</div></div>
+    </div>
+  </div>
+  <p class="lead anim" style="text-align:center;font-weight:800;color:var(--ink);background:var(--panel-2);padding:22px;border-radius:14px;">
+    v-view = <span style="color:var(--mint-deep);">혼자서도 실전처럼</span> + 객관적 피드백<br>
+    <span style="font-size:16px;font-weight:600;color:var(--ink-soft);">(AI 질문 · 시선 분석 · 리포트)</span>
+  </p>
+</section>`,
+
+/* 25 — Thanks */
+`<section class="slide closing">
+  <h1 class="anim">감사합니다</h1>
+  <p class="anim">v-view · 손정협 · 2026-06-22</p>
+  <div class="lk anim">github.com/thswjdguq/v-view</div>
+</section>`
+
+];
+
+/* ============ ENGINE ============ */
+const stage=document.getElementById('stage');
+stage.innerHTML=slides.join('');
+const all=[...document.querySelectorAll('.slide')];
+const total=all.length;
+let idx=0;
+document.getElementById('total').textContent=total;
+
+function show(n){
+  idx=Math.max(0,Math.min(total-1,n));
+  all.forEach((s,i)=>s.classList.toggle('active',i===idx));
+  document.getElementById('cur').textContent=idx+1;
+  document.getElementById('progress').style.width=((idx+1)/total*100)+'%';
+  location.hash=idx+1;
+}
+function next(){show(idx+1);}
+function prev(){show(idx-1);}
+
+document.getElementById('next').onclick=next;
+document.getElementById('prev').onclick=prev;
+document.addEventListener('keydown',e=>{
+  if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();next();}
+  else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();prev();}
+  else if(e.key==='Home'){show(0);}else if(e.key==='End'){show(total-1);}
+});
+// swipe (mobile)
+let tx=0;
+stage.addEventListener('touchstart',e=>tx=e.changedTouches[0].clientX,{passive:true});
+stage.addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50){d<0?next():prev();}},{passive:true});
+
+/* fit to viewport */
+function fit(){
+  const s=Math.min(window.innerWidth/1280,window.innerHeight/720);
+  stage.style.transform='scale('+s+')';
+}
+window.addEventListener('resize',fit);fit();
+
+/* deep link */
+const start=parseInt(location.hash.replace('#',''));
+show(Number.isFinite(start)&&start>=1?start-1:0);
+</script>
+</body>
+</html>
