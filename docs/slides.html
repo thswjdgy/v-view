@@ -294,6 +294,10 @@
       <div class="chain-step"><div class="chain-num">4</div><div class="chain-label">검토</div><div class="chain-sub">손정효</div></div>
     </div>
     <div class="callout" style="margin-top:30px;">전 산출물을 직접 검수·의사결정 (Human-in-the-Loop) · GitHub 56 커밋 · week1~8 브랜치로 주차별 기록</div>
+    <div class="quote-box" style="margin-top:18px;">
+      <div class="who">발표 멘트</div>
+      "Flutter를 선택한 건 iOS·Android를 하나의 코드로 동시에 대응할 수 있기 때문입니다. AI 질문은 gpt-4o-mini, 시선 분석은 온디바이스 ML Kit으로 개인정보를 보호합니다. 기획부터 배포까지 Manifest AI · Google Stitch · Claude Code · 제 검토 순으로 AI 도구 체인을 구성했습니다."
+    </div>
   </div>
 
   <!-- ⑦ 구현 방법 -->
@@ -332,6 +336,10 @@
         &nbsp;&nbsp;&nbsp;&nbsp;├── local/&nbsp;&nbsp;<span class="cmt"># Hive</span><br>
         &nbsp;&nbsp;&nbsp;&nbsp;└── remote/ <span class="cmt"># OpenAI · ML Kit</span>
       </div>
+    </div>
+    <div class="quote-box" style="margin-top:16px;">
+      <div class="who">발표 멘트</div>
+      "4계층으로 나눠서 UI는 State만 보고, State는 Domain만 보고, Data는 Domain을 구현하는 구조입니다. 덕분에 UI에서 Hive나 OpenAI를 직접 호출하는 코드가 없고, 테스트할 때 데이터 레이어를 가짜로 교체하기 쉽습니다."
     </div>
   </div>
 
@@ -498,6 +506,9 @@
       <div style="margin-top:22px;text-align:center;">
         <div style="font-size:16px;color:var(--mute);margin-bottom:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;">향후 발전 방향 (v2)</div>
         <span class="tag">Firebase 실배포</span><span class="tag">STT 음성 인식</span><span class="tag">표정·감정 분석</span><span class="tag">사용자 공유 기능</span>
+        <div style="margin-top:16px;font-size:19px;color:var(--mute);max-width:640px;margin-left:auto;margin-right:auto;line-height:1.6;">
+          이번 프로젝트에서 AI Agent와 협업하는 방식을 익혔고, 앞으로도 LLM을 활용해 더 빠르게 품질 높은 결과물을 만들어 나가겠습니다.
+        </div>
       </div>
       <div class="thanks">감사합니다</div>
       <div class="who">v-view · 손정효</div>
