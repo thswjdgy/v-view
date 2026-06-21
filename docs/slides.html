@@ -105,17 +105,17 @@
   .timeline{display:flex;flex-direction:column;margin-top:10px;}
   .tl-row{display:flex;align-items:center;gap:26px;padding:14px 0;border-bottom:1px solid var(--line);}
   .tl-row:last-child{border-bottom:none;}
-  .tl-week{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:26px;width:62px;color:var(--text);}
-  .tl-date{font-family:'IBM Plex Mono',monospace;font-size:23px;width:100px;color:var(--mute);}
-  .tl-desc{flex:1;font-size:28px;}
+  .tl-week{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:21px;width:52px;color:var(--text);}
+  .tl-date{font-family:'IBM Plex Mono',monospace;font-size:19px;width:90px;color:var(--mute);}
+  .tl-desc{flex:1;font-size:23px;}
   .tl-row.today{background:#F0FBF8;border-radius:8px;}
   .tl-row.today .tl-week,.tl-row.today .tl-desc{color:var(--mint);font-weight:700;}
-  .bars{display:flex;flex-direction:column;gap:22px;margin-top:20px;}
+  .bars{display:flex;flex-direction:column;gap:18px;margin-top:20px;}
   .bar-row{display:flex;align-items:center;gap:20px;}
-  .bar-label{font-family:'IBM Plex Mono',monospace;font-size:24px;width:62px;color:var(--mute);}
-  .bar-track{flex:1;height:40px;background:#EFEDF7;border-radius:6px;overflow:hidden;}
+  .bar-label{font-family:'IBM Plex Mono',monospace;font-size:20px;width:54px;color:var(--mute);}
+  .bar-track{flex:1;height:30px;background:#EFEDF7;border-radius:6px;overflow:hidden;}
   .bar-fill{height:100%;background:var(--mint);border-radius:6px;width:0%;transition:width 1s cubic-bezier(.2,.7,.2,1);}
-  .bar-pct{font-family:'IBM Plex Mono',monospace;font-size:24px;width:70px;text-align:right;color:var(--mint);font-weight:700;}
+  .bar-pct{font-family:'IBM Plex Mono',monospace;font-size:20px;width:60px;text-align:right;color:var(--mint);font-weight:700;}
   .chain{display:flex;align-items:center;margin-top:18px;}
   .chain-step{flex:1;text-align:center;}
   .chain-num{
@@ -313,7 +313,7 @@
       <div class="arch-arrow">↑ implements</div>
       <div class="arch-layer" style="padding:13px 22px;"><span class="name">Data</span><span class="desc">lib/data — local(Hive) · remote(OpenAI · ML Kit · Firebase)</span></div>
     </div>
-    <div class="grid2" style="margin-top:10px;gap:14px;align-items:start;">
+    <div class="grid2" style="margin-top:10px;gap:14px;align-items:start;padding-right:90px;">
       <div class="small" style="font-size:18px;padding-top:4px;">의존 방향: ui → state → domain ← data · 원본 영상 미저장</div>
       <div class="code-block" style="font-size:15px;padding:14px 18px;line-height:1.9;">
         lib/<br>
@@ -361,22 +361,22 @@
     <h1 class="slide-title">개발 환경부터 <span class="accent">빌드 · 배포까지</span></h1>
     <div class="grid2">
       <div class="card">
-        <div style="font-weight:700;font-size:21px;margin-bottom:18px;color:var(--mute);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;">개발 환경 — 5분 셋업</div>
-        <div class="code-block" style="font-size:17px;padding:18px 20px;">
+        <div style="font-weight:700;font-size:26px;margin-bottom:18px;color:var(--mute);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;">개발 환경 — 5분 셋업</div>
+        <div class="code-block" style="font-size:22px;padding:22px 24px;">
           git clone .../v-view<br>
           flutter pub get<br>
           .env 에 OPENAI_API_KEY 입력<br>
           flutter run
         </div>
-        <div class="small" style="margin-top:14px;font-size:16px;">Flutter 3.38.9 · JDK 17 · API 키 하드코딩 금지</div>
+        <div class="small" style="margin-top:14px;font-size:20px;">Flutter 3.38.9 · JDK 17 · API 키 하드코딩 금지</div>
       </div>
       <div class="card">
-        <div style="font-weight:700;font-size:21px;margin-bottom:18px;color:var(--mute);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;">빌드 → 배포</div>
-        <div class="code-block" style="font-size:17px;padding:18px 20px;">flutter build apk --release</div>
-        <div class="small" style="margin-top:14px;font-size:16px;">서명: key.properties + jks · 배포: Firebase App Distribution (파이프라인 준비 완료, 외부 배포 예정)</div>
+        <div style="font-weight:700;font-size:26px;margin-bottom:18px;color:var(--mute);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;">빌드 → 배포</div>
+        <div class="code-block" style="font-size:22px;padding:22px 24px;">flutter build apk --release</div>
+        <div class="small" style="margin-top:14px;font-size:20px;">서명: key.properties + jks · 배포: Firebase App Distribution (파이프라인 준비 완료, 외부 배포 예정)</div>
       </div>
     </div>
-    <div class="callout" style="margin-top:18px;padding:14px 20px;font-size:19px;border-left-color:var(--mint);">설치 가이드: <span class="mono">github.com/thswjdgy/v-view → README.md · docs/SETUP.md · docs/DEPLOY.md</span></div>
+    <div class="callout" style="margin-top:18px;padding:16px 22px;font-size:23px;border-left-color:var(--mint);">설치 가이드: <span class="mono">github.com/thswjdgy/v-view → README.md · docs/SETUP.md · docs/DEPLOY.md</span></div>
   </div>
 
   <!-- ⑫ 테스트 결과 -->
@@ -403,18 +403,18 @@
     <div class="grid2">
       <div class="card">
         <div style="font-weight:700;font-size:21px;margin-bottom:16px;color:var(--mute);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;">성능 최적화</div>
-        <ul class="plain" style="font-size:19px;margin-bottom:0;">
-          <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M9.5 9.5L3 21l11.5-6.5M14.5 14.5L21 3 9.5 9.5"/></svg></span>UI Flash 방지 — 질문 화면 진입 시 동기 초기화</li>
-          <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>무한 루프 차단 — 꼬리질문 깊이 최대 2단계</li>
-          <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M17 2.1l4 4-4 4M3 6h18M7 21.9l-4-4 4-4M21 18H3"/></svg></span>중복 API 억제 — 재진입 시 중복 생성 방지</li>
+        <ul class="plain" style="margin-bottom:0;">
+          <li style="font-size:22px;margin-bottom:14px;"><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M9.5 9.5L3 21l11.5-6.5M14.5 14.5L21 3 9.5 9.5"/></svg></span>UI Flash 방지 — 질문 화면 진입 시 동기 초기화</li>
+          <li style="font-size:22px;margin-bottom:14px;"><span class="ico"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>무한 루프 차단 — 꼬리질문 깊이 최대 2단계</li>
+          <li style="font-size:22px;margin-bottom:0;"><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M17 2.1l4 4-4 4M3 6h18M7 21.9l-4-4 4-4M21 18H3"/></svg></span>중복 API 억제 — 재진입 시 중복 생성 방지</li>
         </ul>
       </div>
       <div class="card">
         <div style="font-weight:700;font-size:21px;margin-bottom:16px;color:var(--mute);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;">코드 품질 관리</div>
-        <ul class="plain" style="font-size:19px;margin-bottom:0;">
-          <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><span class="mono" style="font-size:17px;">flutter analyze</span> 매 수정마다 — 에러·경고 0건</li>
-          <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>외과적 수정 — 변경 줄이 요청에서 직접 추적 가능</li>
-          <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>레이어 경계 검토 — AI 생성물 위치 오류를 직접 교정</li>
+        <ul class="plain" style="margin-bottom:0;">
+          <li style="font-size:22px;margin-bottom:14px;"><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><span class="mono" style="font-size:20px;">flutter analyze</span> 매 수정마다 — 에러·경고 0건</li>
+          <li style="font-size:22px;margin-bottom:14px;"><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>외과적 수정 — 변경 줄이 요청에서 직접 추적 가능</li>
+          <li style="font-size:22px;margin-bottom:0;"><span class="ico"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>레이어 경계 검토 — AI 생성물 위치 오류를 직접 교정</li>
         </ul>
       </div>
     </div>
