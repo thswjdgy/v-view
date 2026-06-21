@@ -202,7 +202,7 @@ WBS 마일스톤
 | **합계** | **45 (All passed)** |
 
 - 핵심 검증: 시선 분산 **연속 1초 기준**, 응시율 공식, 상태 전환, AI 실패 시 fallback
-- 통합 테스트(integration_test)는 **향후 추가 예정**
+- 통합 테스트(integration_test): E2E 앱 시작·인증 화면 시나리오 추가 완료
 
 ---
 
@@ -274,7 +274,6 @@ WBS 마일스톤
 - v-view = 혼자서도 실전처럼 + 객관적 피드백 (AI 질문 · 시선 분석 · 리포트)
 - 개발 방식: 분야별 특화 AI(Manifest AI · Google Stitch · Claude Code) + 사람 검토
 - 향후 (v2)
-  - 통합 테스트(integration_test) 추가
   - Firebase App Distribution 실배포
   - 음성(STT) · 표정/감정 분석 확장
 - 감사합니다.
@@ -285,6 +284,6 @@ WBS 마일스톤
 
 - 응시율 "72%" 등 구체 측정 수치 (실측 기록 없음)
 - "FaceDetector 1,028회 / 에러 0건" (근거 없음)
-- "통합 테스트 완료" (integration_test 미존재 → '예정'으로)
+- "통합 테스트 45개 전부 통과" 등 과장 표현 금지 (통합 테스트는 E2E 기본 시나리오 수준)
 - "flutter analyze 0건 클린" (info 6건 존재 → '에러·경고 0'으로)
 - "Firebase 배포 완료" (파이프라인 준비/예정 단계)
