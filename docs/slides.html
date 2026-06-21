@@ -207,6 +207,10 @@
       <div class="chain-step"><div class="chain-num">3</div><div class="chain-label">끝나면 리포트</div></div>
     </div>
     <div class="callout" style="margin-top:38px;border-left-color:var(--mint);font-size:27px;font-weight:600;">v-view는 혼자 연습에도 실전 같은 긴장감과 객관적인 피드백을 제공한다</div>
+    <div class="quote-box" style="margin-top:20px;">
+      <div class="who">발표 멘트</div>
+      "취업 준비생이라면 혼자 거울 보며 면접 연습을 해본 경험이 있을 겁니다. 그런데 실전 같은 긴장감도 없고, 내가 잘하고 있는지도 모르죠. v-view는 AI가 직무와 자소서 기반으로 질문을 만들고, 카메라가 시선을 분석해서 혼자서도 실전처럼 코칭받을 수 있는 앱입니다."
+    </div>
   </div>
 
   <!-- ③ 문제 정의 -->
@@ -231,6 +235,10 @@
       </div>
     </div>
     <div class="callout" style="margin-top:34px;font-size:27px;font-weight:700;">내가 지금 잘하고 있나를 알 수 없는 막막함</div>
+    <div class="quote-box" style="margin-top:16px;">
+      <div class="who">발표 멘트</div>
+      "혼자 연습할 때 마주치는 문제가 세 가지입니다. 면접관 없이는 긴장감을 만들 수 없고, 시선이 흔들려도 스스로는 모릅니다. 그리고 나에게 딱 맞는 질문을 받기도 어렵습니다. v-view는 이 세 가지를 동시에 해결합니다."
+    </div>
   </div>
 
   <!-- ④ WBS -->
@@ -313,7 +321,18 @@
       <div class="arch-arrow">↑ implements</div>
       <div class="arch-layer"><span class="name">Data</span><span class="desc">lib/data — local(Hive) · remote(OpenAI · ML Kit · Firebase)</span></div>
     </div>
-    <div class="small" style="margin-top:22px;font-size:20px;">의존 방향: ui → state → domain ← data · 원본 영상은 저장하지 않음</div>
+    <div class="grid2" style="margin-top:16px;gap:16px;align-items:start;">
+      <div class="small" style="font-size:18px;padding-top:4px;">의존 방향: ui → state → domain ← data · 원본 영상 미저장</div>
+      <div class="code-block" style="font-size:15px;padding:14px 18px;line-height:1.9;">
+        lib/<br>
+        ├── ui/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># 화면·위젯</span><br>
+        ├── state/&nbsp;&nbsp;<span class="cmt"># Riverpod Notifier</span><br>
+        ├── domain/&nbsp;<span class="cmt"># 순수 Dart 엔티티</span><br>
+        └── data/<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;├── local/&nbsp;&nbsp;<span class="cmt"># Hive</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;└── remote/ <span class="cmt"># OpenAI · ML Kit</span>
+      </div>
+    </div>
   </div>
 
   <!-- ⑨ ADR -->
@@ -369,6 +388,7 @@
         <div class="small" style="margin-top:14px;font-size:16px;">서명: key.properties + jks · 배포: Firebase App Distribution (파이프라인 준비 완료, 외부 배포 예정)</div>
       </div>
     </div>
+    <div class="callout" style="margin-top:18px;padding:14px 20px;font-size:19px;border-left-color:var(--mint);">설치 가이드: <span class="mono">github.com/thswjdgy/v-view → README.md · docs/SETUP.md · docs/DEPLOY.md</span></div>
   </div>
 
   <!-- ⑫ 테스트 결과 -->
@@ -452,14 +472,29 @@
     </div>
   </div>
 
-  <!-- ⑯ 마무리 -->
+  <!-- ⑯ 데모 -->
+  <div class="slide">
+    <div class="eyebrow"><svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>DEMO · 30초 시연</div>
+    <h1 class="slide-title"><span class="accent">30초</span> 시연 데모</h1>
+    <div class="lede" style="font-size:26px;margin-bottom:20px;">사용자 시나리오: 세션 설정 → AI 질문 시작 → 시선 분석 → 리포트 확인</div>
+    <div class="card" style="flex:1;display:flex;align-items:center;justify-content:center;border:2px dashed var(--mint);background:#F0FBF8;">
+      <div style="text-align:center;">
+        <div style="font-size:64px;margin-bottom:16px;">▶</div>
+        <div style="font-size:28px;font-weight:700;color:var(--mint);">데모 영상</div>
+        <div style="font-size:20px;color:var(--mute);margin-top:10px;">30초 · 실기기 시연</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑰ 마무리 -->
   <div class="slide">
     <div class="closing">
       <div class="eyebrow" style="justify-content:center;">CLOSING</div>
       <div class="app">v-view</div>
       <div class="lede" style="margin-top:18px;font-size:24px;text-align:center;max-width:760px;">혼자서도 실전처럼, 시선까지 잡아주는 AI 면접 코치</div>
       <div style="margin-top:22px;text-align:center;">
-        <span class="tag">Firebase 실배포</span><span class="tag">음성·표정 분석 확장</span>
+        <div style="font-size:16px;color:var(--mute);margin-bottom:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;">향후 발전 방향 (v2)</div>
+        <span class="tag">Firebase 실배포</span><span class="tag">STT 음성 인식</span><span class="tag">표정·감정 분석</span><span class="tag">사용자 공유 기능</span>
       </div>
       <div class="thanks">감사합니다</div>
       <div class="who">v-view · 손정효</div>
