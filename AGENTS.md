@@ -490,5 +490,5 @@ flutter build apk --release  # 릴리즈 빌드
 | Week 8 | Duolingo 스타일 UI 전면 개편 (홈·세션설정·면접·리포트 4개 화면 신규) |
 | Week 8+ | 꼬리질문 AI 판단 로직, 세션 초기화 버그 수정, Gradle 설정 최적화 |
 
-> 전체 커밋 이력: [github.com/thswjdguq/v-view](https://github.com/thswjdguq/v-view)
+> 전체 커밋 이력: [github.com/thswjdgy/v-view](https://github.com/thswjdgy/v-view)
 > 코딩 원칙 상세: [md/CLAUDE.md](md/CLAUDE.md)

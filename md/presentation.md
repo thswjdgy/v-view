@@ -145,7 +145,7 @@ A. 스키마 마이그레이션 불필요, Map 직렬화로 충분한 단순 구
 - 릴리즈 APK 빌드 완료 (`app-release.apk` 80MB)
 - AI Agent와 함께한 바이브 코딩 → `AUTHORING.손정효.md`
 
-**GitHub:** `thswjdguq/v-view`
+**GitHub:** `thswjdgy/v-view`
 
 ---
 

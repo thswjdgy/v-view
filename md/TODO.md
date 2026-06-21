@@ -28,7 +28,7 @@
 - [x] CLAUDE.md 작성 (AI Agent 코딩 원칙)
 
 ### 환경 구축
-- [x] GitHub 저장소 생성 (`thswjdguq/v-view`)
+- [x] GitHub 저장소 생성 (`thswjdgy/v-view`)
 - [x] Flutter 프로젝트 스캐폴드 생성 (`v_view/`)
 - [x] pubspec.yaml 의존성 구성 (Riverpod, Hive, Dio, ML Kit, fl_chart 등)
 - [x] `.env` / `.env.example` API 키 관리 구조

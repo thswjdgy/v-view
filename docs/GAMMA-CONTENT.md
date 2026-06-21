@@ -227,7 +227,7 @@ WBS 마일스톤
 
 **저장소 & 문서**
 
-- Repo: github.com/thswjdguq/v-view
+- Repo: github.com/thswjdgy/v-view
 - README: Setup Guide · Build & Deployment · Testing · Architecture · ADR
 - 설치: `git clone` → `flutter pub get` → `.env` 설정 → `flutter run`
 - 문서 인덱스: `docs/SETUP.md` · `DEPLOY.md` · `TESTING.md` · `ARCHITECTURE.md` · `docs/ADR/`

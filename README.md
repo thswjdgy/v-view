@@ -95,7 +95,7 @@ flutter doctor
 ### 2. 저장소 클론 및 의존성 설치
 
 ```bash
-git clone https://github.com/thswjdguq/v-view.git
+git clone https://github.com/thswjdgy/v-view.git
 cd v-view/v_view
 flutter pub get          # → "Got dependencies!" 출력 시 성공
 ```
@@ -478,4 +478,4 @@ v-view/
 
 ---
 
-> **저장소**: [github.com/thswjdguq/v-view](https://github.com/thswjdguq/v-view)
+> **저장소**: [github.com/thswjdgy/v-view](https://github.com/thswjdgy/v-view)

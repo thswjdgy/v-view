@@ -28,7 +28,7 @@ flutter doctor
 ## 2. 저장소 클론
 
 ```bash
-git clone https://github.com/thswjdguq/v-view.git
+git clone https://github.com/thswjdgy/v-view.git
 cd v-view/v_view
 ```
 
